@@ -15,4 +15,8 @@ public class OrderSystemApplication {
  * DONE: Implement Middleware/Filters for Auth
  * DONE: Implement OAuth Callback login (login / register)
  * DONE: Implement OAuth Validation (Determine if it is a school account with the correct class and seat number)
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Security Problems
+ * 1. Token does not expire
+ *
  */

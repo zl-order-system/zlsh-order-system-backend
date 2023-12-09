@@ -1,4 +1,4 @@
-package net.octoberserver.ordersystem.auth;
+package net.octoberserver.ordersystem.auth.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,6 +15,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -44,14 +45,15 @@ public class JWTService {
         return claimsResolver.apply(extractClaims(token));
     }
 
-    public String extractUserID(String token) {
+    public Optional<String> extractUserID(String token) {
+        String subject;
         try {
-            String subject = extractClaim(token, Claims::getSubject);
+            subject = extractClaim(token, Claims::getSubject);
             Long.parseLong(subject);
-            return subject;
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, null, e);
+            return Optional.empty();
         }
+        return Optional.of(subject);
     }
 
     private Claims extractClaims(String token) {
@@ -61,9 +63,5 @@ public class JWTService {
             .build()
             .parseSignedClaims(token)
             .getPayload();
-    }
-
-    public boolean isTokenValid(String token, UserDetails user) {
-        return extractUserID(token).equals(user.getUsername());
     }
 }

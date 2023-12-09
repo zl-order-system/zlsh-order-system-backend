@@ -1,14 +1,11 @@
-package net.octoberserver.ordersystem.auth;
+package net.octoberserver.ordersystem.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.user.AppUser;
 import net.octoberserver.ordersystem.user.AppUserRepository;
 import net.octoberserver.ordersystem.user.Role;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +13,21 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CustomOidcUserService extends OidcUserService {
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final AppUserRepository userRepository;
     private final JWTService jwtService;
 
     @Override
-    public OidcUser loadUser(OidcUserRequest userRequest) {
-        OidcUser oidcUser = super.loadUser(userRequest);
+    public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) {
+        OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
 
-        String email = oidcUser.getEmail();
-        String googleName = oidcUser.getFullName();
+        String email = oAuth2User.getAttribute("email");
+        if (email == null) {
+            throw new RuntimeException("Email is null");
+        }
+
+        String googleName = oAuth2User.getName();
 
         long userID = Long.parseLong(email.substring(1, email.indexOf('@'))); // 學號
         String name = googleName.substring(5, googleName.length() - 1);
@@ -46,7 +47,7 @@ public class CustomOidcUserService extends OidcUserService {
                 .role(Role.USER)
                 .classNumber(classNumber)
                 .seatNumber(seatNumber)
-                .attributes(oidcUser.getAttributes())
+                .attributes(oAuth2User.getAttributes())
                 .build();
             userRepository.save(user);
         } else {
@@ -63,5 +64,3 @@ public class CustomOidcUserService extends OidcUserService {
         return user;
     }
 }
-
-
