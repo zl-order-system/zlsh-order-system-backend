@@ -16,7 +16,6 @@ import java.util.Optional;
 public class CustomOidcUserService extends OidcUserService {
 
     private final AppUserRepository userRepository;
-    private final JWTService jwtService;
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) {

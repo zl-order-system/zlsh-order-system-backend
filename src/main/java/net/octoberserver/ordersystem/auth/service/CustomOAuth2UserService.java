@@ -16,7 +16,6 @@ import java.util.Optional;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final AppUserRepository userRepository;
-    private final JWTService jwtService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) {
