@@ -23,12 +23,12 @@ public class CustomOidcUserService extends OidcUserService {
         OidcUser oidcUser = super.loadUser(userRequest);
 
         String email = oidcUser.getEmail();
-        String googleName = oidcUser.getFullName();
+        String googleName = oidcUser.getAttribute("name");
 
         long userID = Long.parseLong(email.substring(1, email.indexOf('@'))); // 學號
-        String name = googleName.substring(5, googleName.length() - 1);
-        short classNumber = Short.parseShort(googleName.substring(0, 2));
-        short seatNumber = Short.parseShort(googleName.substring(3, 4));
+        String name = googleName.substring(5);
+        short classNumber = Short.parseShort(googleName.substring(0, 3));
+        short seatNumber = Short.parseShort(googleName.substring(3, 5));
 
         AppUser user;
         Optional<AppUser> userOptional = userRepository.findById(userID);
