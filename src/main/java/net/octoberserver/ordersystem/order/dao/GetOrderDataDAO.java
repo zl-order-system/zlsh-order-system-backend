@@ -28,15 +28,7 @@ public class GetOrderDataDAO {
         private String lunchBox;
         private String price;
         private String selectedMeal;
-        private List<MealOption> mealOptions;
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    public static class MealOption {
-        private String id;
-        private String name;
+        private String mealOptions;
     }
 
     public static class OrderState {

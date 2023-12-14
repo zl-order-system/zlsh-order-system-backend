@@ -15,11 +15,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Order {
+public class OrderData {
     @Id
     UUID ID;
-    UUID mealOptionID;
     long userID;
+    short meal;
     LocalDate date;
     LunchBox lunchBox;
     boolean paid;
