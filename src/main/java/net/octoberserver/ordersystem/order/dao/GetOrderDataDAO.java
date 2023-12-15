@@ -28,7 +28,7 @@ public class GetOrderDataDAO {
         private String lunchBox;
         private String price;
         private String selectedMeal;
-        private String mealOptions;
+        private List<String> mealOptions;
     }
 
     public static class OrderState {

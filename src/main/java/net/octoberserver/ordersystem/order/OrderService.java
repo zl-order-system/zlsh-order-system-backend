@@ -1,10 +1,14 @@
 package net.octoberserver.ordersystem.order;
 
+import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.meal.Meal;
 import net.octoberserver.ordersystem.order.dao.GetOrderDataDAO;
-import net.octoberserver.ordersystem.order.dto.MealOrderDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,20 +21,21 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    public Optional<GetOrderDataDAO> getOrderData() {
-        List<GetOrderDataDAO.BodyData> bodyData = new ArrayList<>();
+    public GetOrderDataDAO getOrderData() {
+        long userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        // TODO: Use a loop to append data to list
+        List<GetOrderDataDAO.BodyData> bodyData = new ArrayList<>();
 
         var headerData = new GetOrderDataDAO.HeaderData(0, 0, 0);
 
-        List<MealOrderDTO> mealOrders = orderRepository.findUpcomingMealsWithOrders();
+        List<Tuple> mealOrders = orderRepository.findUpcomingMealsWithOrders(userID);
+
         mealOrders.forEach(mealOrder -> {
-            Meal meal = mealOrder.getMeal();
-            OrderData orderData = mealOrder.getOrderData();
+            Meal meal = mealOrder.get(0, Meal.class);
+            OrderData orderData = mealOrder.get(1, OrderData.class);
             LocalDate date = meal.getDate();
             String displayDate = date.toString();
-            String mealOptions = meal.getOptionsAsString();
+            List<String> mealOptions = meal.getOptions();
 
             if (orderData == null) {
                 bodyData.add(GetOrderDataDAO.BodyData
@@ -67,15 +72,11 @@ public class OrderService {
                 .state(orderState)
                 .price(Integer.toString(price))
                 .lunchBox(getLunchBoxString(orderData.lunchBox))
-                .selectedMeal(meal.getOptions().get(orderData.meal))
+                .selectedMeal(Short.toString(orderData.meal))
                 .build()
             );
-
-            System.out.println(mealOrder.getMeal().toString());
-            System.out.println(mealOrder.getOrderData().toString());
         });
-
-        return Optional.of(new GetOrderDataDAO(headerData, bodyData));
+        return new GetOrderDataDAO(headerData, bodyData);
     }
 
     public int getPrice(LunchBox lunchBox) {

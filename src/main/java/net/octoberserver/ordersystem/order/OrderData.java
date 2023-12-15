@@ -1,6 +1,8 @@
 package net.octoberserver.ordersystem.order;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,7 @@ public class OrderData {
     long userID;
     short meal;
     LocalDate date;
+    @Enumerated(EnumType.STRING)
     LunchBox lunchBox;
     boolean paid;
 }
