@@ -38,7 +38,7 @@ public class WebSecurityConfig {
             .authorizeHttpRequests(request -> request
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/**").authenticated()
-                .requestMatchers("/apt/admin/**").hasRole("admin")
+                .requestMatchers("/apt/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
             )
             .sessionManagement(sc -> sc

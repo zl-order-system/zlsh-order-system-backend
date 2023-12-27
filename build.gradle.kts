@@ -35,6 +35,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools:3.0.4")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.0")
+    testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.security:spring-security-test:6.0.2")
 }
 

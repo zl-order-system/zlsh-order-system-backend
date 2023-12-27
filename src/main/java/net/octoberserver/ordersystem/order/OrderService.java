@@ -21,9 +21,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    public GetOrderDataDAO getOrderData() {
-        long userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-
+    public GetOrderDataDAO getOrderData(long userID) {
         List<GetOrderDataDAO.BodyData> bodyData = new ArrayList<>();
 
         var headerData = new GetOrderDataDAO.HeaderData(0, 0, 0);
