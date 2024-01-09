@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +23,12 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     public GetOrderDataDAO getOrderData(long userID) {
-        List<GetOrderDataDAO.BodyData> bodyData = new ArrayList<>();
+        return processOrderData(orderRepository.findUpcomingMealsWithOrders(userID));
+    }
 
+    private GetOrderDataDAO processOrderData(List<Tuple> mealOrders) {
         var headerData = new GetOrderDataDAO.HeaderData(0, 0, 0);
-
-        List<Tuple> mealOrders = orderRepository.findUpcomingMealsWithOrders(userID);
+        var bodyData = new ArrayList<GetOrderDataDAO.BodyData>();
 
         mealOrders.forEach(mealOrder -> {
             Meal meal = mealOrder.get(0, Meal.class);
