@@ -4,17 +4,11 @@ import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.meal.Meal;
 import net.octoberserver.ordersystem.order.dao.GetOrderDataDAO;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +22,7 @@ public class OrderService {
 
     private GetOrderDataDAO processOrderData(List<Tuple> mealOrders) {
         var headerData = new GetOrderDataDAO.HeaderData(0, 0, 0);
-        var bodyData = new ArrayList<GetOrderDataDAO.BodyData>();
+        var daoOrderItems = new ArrayList<GetOrderDataDAO.DaoOrderItem>();
 
         mealOrders.forEach(mealOrder -> {
             Meal meal = mealOrder.get(0, Meal.class);
@@ -38,7 +32,7 @@ public class OrderService {
             List<String> mealOptions = meal.getOptions();
 
             if (orderData == null) {
-                bodyData.add(GetOrderDataDAO.BodyData
+                daoOrderItems.add(GetOrderDataDAO.DaoOrderItem
                     .builder()
                     .date(date)
                     .displayDate(displayDate)
@@ -64,7 +58,7 @@ public class OrderService {
                 headerData.setOwed(headerData.getOwed() + price);
             }
 
-            bodyData.add(GetOrderDataDAO.BodyData
+            daoOrderItems.add(GetOrderDataDAO.DaoOrderItem
                 .builder()
                 .date(date)
                 .displayDate(displayDate)
@@ -76,7 +70,7 @@ public class OrderService {
                 .build()
             );
         });
-        return new GetOrderDataDAO(headerData, bodyData);
+        return new GetOrderDataDAO(headerData, daoOrderItems);
     }
 
     public int getPrice(LunchBox lunchBox) {

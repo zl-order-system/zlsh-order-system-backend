@@ -21,7 +21,7 @@ public class GetOrderDataDAO {
     @Data
     @Builder
     @AllArgsConstructor
-    public static class BodyData {
+    public static class DaoOrderItem {
         private String state;
         private LocalDate date;
         private String displayDate;
@@ -43,5 +43,5 @@ public class GetOrderDataDAO {
     }
 
     private HeaderData headerData;
-    private List<BodyData> bodyData;
+    private List<DaoOrderItem> bodyData;
 }
