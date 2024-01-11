@@ -4,6 +4,7 @@ import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.meal.Meal;
 import net.octoberserver.ordersystem.order.dao.GetOrderDataDAO;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,16 +21,16 @@ public class OrderService {
         return processOrderData(orderRepository.findUpcomingMealsWithOrders(userID));
     }
 
-    private GetOrderDataDAO processOrderData(List<Tuple> mealOrders) {
-        var headerData = new GetOrderDataDAO.HeaderData(0, 0, 0);
-        var daoOrderItems = new ArrayList<GetOrderDataDAO.DaoOrderItem>();
+    private GetOrderDataDAO processOrderData(@NotNull List<Tuple> mealOrders) {
+        final var headerData = new GetOrderDataDAO.HeaderData(0, 0, 0);
+        final var daoOrderItems = new ArrayList<GetOrderDataDAO.DaoOrderItem>();
 
         mealOrders.forEach(mealOrder -> {
-            Meal meal = mealOrder.get(0, Meal.class);
-            OrderData orderData = mealOrder.get(1, OrderData.class);
-            LocalDate date = meal.getDate();
-            String displayDate = date.toString();
-            List<String> mealOptions = meal.getOptions();
+            final Meal meal = mealOrder.get(0, Meal.class);
+            final OrderData orderData = mealOrder.get(1, OrderData.class);
+            final LocalDate date = meal.getDate();
+            final String displayDate = date.toString();
+            final List<String> mealOptions = meal.getOptions();
 
             if (orderData == null) {
                 daoOrderItems.add(GetOrderDataDAO.DaoOrderItem
@@ -47,9 +48,9 @@ public class OrderService {
                 return;
             }
 
-            int price = getPrice(orderData.lunchBox);
+            final int price = getPrice(orderData.lunchBox);
 
-            String orderState;
+            final String orderState;
             if (orderData.paid) {
                 orderState = GetOrderDataDAO.OrderState.PAID;
                 headerData.setPaid(headerData.getPaid() + price);
@@ -73,14 +74,14 @@ public class OrderService {
         return new GetOrderDataDAO(headerData, daoOrderItems);
     }
 
-    public int getPrice(LunchBox lunchBox) {
+    public int getPrice(@NotNull LunchBox lunchBox) {
         return switch (lunchBox) {
             case PERSONAL -> 65;
             case SCHOOL -> 70;
         };
     }
 
-    public String getLunchBoxString(LunchBox lunchBox) {
+    public String getLunchBoxString(@NotNull LunchBox lunchBox) {
         return switch (lunchBox) {
             case PERSONAL -> GetOrderDataDAO.LunchBoxType.PERSONAL;
             case SCHOOL -> GetOrderDataDAO.LunchBoxType.SCHOOL;

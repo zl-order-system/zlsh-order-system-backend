@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.auth.service.JWTService;
-import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -36,21 +34,21 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String token = authHeader.substring(7);
-        final Optional<String> userID = jwtService.extractUserID(token);;
+        final Optional<String> userID = jwtService.extractUserID(token);
 
         if (userID.isEmpty() || SecurityContextHolder.getContext().getAuthentication() != null) {
             filterChain.doFilter(req, res);
             return;
         }
 
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(userID.get());
+        final UserDetails userDetails = this.userDetailsService.loadUserByUsername(userID.get());
         // Logically weird, might consider removing
         if (userDetails == null) {
             filterChain.doFilter(req, res);
             return;
         }
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        final UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
             userDetails,
             null,
             userDetails.getAuthorities()

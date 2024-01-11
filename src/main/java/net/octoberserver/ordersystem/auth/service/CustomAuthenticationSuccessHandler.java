@@ -27,12 +27,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        String targetUrl = redirectUri.isEmpty() ?
-            determineTargetUrl(request, response, authentication) : redirectUri;
-
-        String token = jwtService.generateToken((AppUser) authentication.getPrincipal());
-
-        targetUrl = UriComponentsBuilder.fromUriString(targetUrl).queryParam("token", token).build().toUriString();
+        final String token = jwtService.generateToken((AppUser) authentication.getPrincipal());
+        final String targetUrl = UriComponentsBuilder.fromUriString(redirectUri).queryParam("token", token).build().toUriString();
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }
