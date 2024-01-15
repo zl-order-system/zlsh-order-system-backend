@@ -3,25 +3,51 @@ package net.octoberserver.ordersystem.order;
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.meal.Meal;
-import net.octoberserver.ordersystem.order.dao.GetOrderDataDAO;
+import net.octoberserver.ordersystem.order.dao.*;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    public GetHomeDataDAO processHomeData(@NotNull List<Tuple> mealOrders, LocalDate today) {
+        final var headerData = new GetHomeDataDAO.BannerData(today, false, 0, 0);
+        mealOrders.forEach(mealOrder -> {
+            final OrderData orderData = mealOrder.get(1, OrderData.class);
+            if (orderData == null) {
+                return;
+            }
+            if (!orderData.isPaid()) {
+                headerData.setOwed(headerData.getOwed() + getPrice(orderData.getLunchBox()));
+            }
+            if (orderData.getDate().equals(today)) {
+                headerData.setHasPaidToday(orderData.isPaid());
+            }
+            headerData.setDaysOrdered(headerData.getDaysOrdered() + 1);
+        });
 
-    private final OrderRepository orderRepository;
-
-    public GetOrderDataDAO getOrderData(long userID) {
-        return processOrderData(orderRepository.findUpcomingMealsWithOrders(userID));
+        var bodyData = mealOrders
+            .stream()
+            .map(mealOrder -> {
+                var orderData = mealOrder.get(1, OrderData.class);
+                var meal = mealOrder.get(1, Meal.class);
+                if (orderData == null) {
+                    return new GetHomeDataDAO.PreviewData(meal.getDate(), false);
+                }
+                return new GetHomeDataDAO.PreviewData(orderData.getDate(), true);
+            })
+            .collect(Collectors.toList());
+        return new GetHomeDataDAO(headerData, bodyData);
     }
 
-    private GetOrderDataDAO processOrderData(@NotNull List<Tuple> mealOrders) {
+    public GetOrderDataDAO processOrderData(@NotNull List<Tuple> mealOrders) {
         final var headerData = new GetOrderDataDAO.HeaderData(0, 0, 0);
         final var daoOrderItems = new ArrayList<GetOrderDataDAO.DaoOrderItem>();
 
@@ -37,8 +63,9 @@ public class OrderService {
                     .builder()
                     .date(date)
                     .displayDate(displayDate)
+                    .id(null)
                     .mealOptions(mealOptions)
-                    .state(GetOrderDataDAO.OrderState.UNORDERED)
+                    .state(OrderState.UNORDERED)
                     .price("-")
                     .lunchBox("-")
                     .selectedMeal("-")
@@ -48,14 +75,14 @@ public class OrderService {
                 return;
             }
 
-            final int price = getPrice(orderData.lunchBox);
+            final int price = getPrice(orderData.getLunchBox());
 
             final String orderState;
-            if (orderData.paid) {
-                orderState = GetOrderDataDAO.OrderState.PAID;
+            if (orderData.isPaid()) {
+                orderState = OrderState.PAID;
                 headerData.setPaid(headerData.getPaid() + price);
             } else {
-                orderState = GetOrderDataDAO.OrderState.UNPAID;
+                orderState = OrderState.UNPAID;
                 headerData.setOwed(headerData.getOwed() + price);
             }
 
@@ -63,11 +90,12 @@ public class OrderService {
                 .builder()
                 .date(date)
                 .displayDate(displayDate)
+                .id(orderData.getID())
                 .mealOptions(mealOptions)
                 .state(orderState)
                 .price(Integer.toString(price))
-                .lunchBox(getLunchBoxString(orderData.lunchBox))
-                .selectedMeal(Short.toString(orderData.meal))
+                .lunchBox(getLunchBoxString(orderData.getLunchBox()))
+                .selectedMeal(Short.toString(orderData.getMeal()))
                 .build()
             );
         });
@@ -83,8 +111,16 @@ public class OrderService {
 
     public String getLunchBoxString(@NotNull LunchBox lunchBox) {
         return switch (lunchBox) {
-            case PERSONAL -> GetOrderDataDAO.LunchBoxType.PERSONAL;
-            case SCHOOL -> GetOrderDataDAO.LunchBoxType.SCHOOL;
+            case PERSONAL -> LunchBoxType.PERSONAL;
+            case SCHOOL -> LunchBoxType.SCHOOL;
+        };
+    }
+
+    public LunchBox getLunchBoxEnum(@NotNull String string) {
+        return switch (string) {
+            case LunchBoxType.PERSONAL -> LunchBox.PERSONAL;
+            case LunchBoxType.SCHOOL -> LunchBox.SCHOOL;
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Lunch Box Type: " + string);
         };
     }
 }

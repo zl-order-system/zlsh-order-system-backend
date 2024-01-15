@@ -19,11 +19,11 @@ import java.util.UUID;
 @Builder
 public class OrderData {
     @Id
-    UUID ID;
-    long userID;
-    short meal;
-    LocalDate date;
+    private UUID ID;
+    private long userID;
+    private short meal;
+    private LocalDate date;
     @Enumerated(EnumType.STRING)
-    LunchBox lunchBox;
-    boolean paid;
+    private LunchBox lunchBox;
+    private boolean paid;
 }
