@@ -2,6 +2,7 @@ package net.octoberserver.ordersystem.order;
 
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
+import net.octoberserver.ordersystem.common.LunchBoxType;
 import net.octoberserver.ordersystem.meal.Meal;
 import net.octoberserver.ordersystem.meal.MealOptionDTO;
 import net.octoberserver.ordersystem.order.dao.*;

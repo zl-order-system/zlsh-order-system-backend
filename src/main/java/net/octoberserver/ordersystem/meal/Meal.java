@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.octoberserver.ordersystem.util.ListToJsonConverter;
+import net.octoberserver.ordersystem.common.ListToJsonConverter;
 
 import java.time.LocalDate;
 import java.util.List;

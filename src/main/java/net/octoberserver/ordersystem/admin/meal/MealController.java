@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @RequestMapping("/api/admin/meal")
 @RequiredArgsConstructor
 public class MealController {
-
     private final MealService mealService;
 
     @GetMapping("/detailed")
@@ -19,7 +18,7 @@ public class MealController {
         return mealService.getMealDetailed(date);
     }
 
-    @PatchMapping
+    @PatchMapping("/detailed")
     void patchMealDetailed(@RequestBody PatchMealDetailedRequestDAO request) {
         mealService.patchMealDetailed(request);
     }
