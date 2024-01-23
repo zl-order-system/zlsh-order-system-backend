@@ -15,27 +15,27 @@ public class OrderController {
     private final OrderPersistentService orderPersistentService;
 
     @GetMapping("/home")
-    public GetHomeDataDAO getHomeData() {
+    GetHomeDataDAO getHomeData() {
         return orderPersistentService.getHomeData(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()), LocalDate.now());
     }
 
     @GetMapping
-    public GetOrderDataDAO getOrderData() {
+    GetOrderDataDAO getOrderData() {
         return orderPersistentService.getOrderData(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
     @PostMapping
-    public CreateOrderDataDAO.Response createOrderData(@RequestBody CreateOrderDataDAO.Request request) {
+    CreateOrderDataDAO.Response createOrderData(@RequestBody CreateOrderDataDAO.Request request) {
         return orderPersistentService.createOrderData(request, Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
     @PatchMapping
-    public void updateOrderData(@RequestBody UpdateOrderDataDAO request) {
+    void updateOrderData(@RequestBody UpdateOrderDataDAO request) {
         orderPersistentService.updateOrderData(request);
     }
 
     @DeleteMapping
-    public void deleteOrderData(@RequestBody DeleteOrderDataDAO request) {
+    void deleteOrderData(@RequestBody DeleteOrderDataDAO request) {
         orderPersistentService.deleteOrderData(request);
     }
 }

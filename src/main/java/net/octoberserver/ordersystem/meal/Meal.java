@@ -24,18 +24,15 @@ public class Meal {
     private LocalDate date;
     private String options;
 
-    public List<String> getOptions() {
+    public List<MealOptionDTO> getOptions() {
         try {
             return new ObjectMapper().readValue(options, ArrayList.class);
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }
-    public String getOptionsAsString() {
-        return options;
-    }
 
-    public void setOptions(List<String> options) {
+    public void setOptions(List<MealOptionDTO> options) {
         try {
             this.options = new ObjectMapper().writeValueAsString(options);
         } catch(Exception e) {

@@ -3,6 +3,7 @@ package net.octoberserver.ordersystem.order.dao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import net.octoberserver.ordersystem.meal.MealOptionDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +31,7 @@ public class GetOrderDataDAO {
         private String lunchBox;
         private String price;
         private String selectedMeal;
-        private List<String> mealOptions;
+        private List<MealOptionDTO> mealOptions;
     }
 
     private HeaderData headerData;
