@@ -1,4 +1,4 @@
-package net.octoberserver.ordersystem.admin.meal;
+package net.octoberserver.ordersystem.admin.meal.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,14 +9,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-class GetMealDetailedResponseDAO {
-    private List<MealOptionDTO> options;
-}
-
-
-@Data
-@AllArgsConstructor
-class PatchMealDetailedRequest {
+public class PatchMealDetailedRequestDAO {
     private LocalDate date;
     private List<MealOptionDTO> options;
 }
