@@ -2,12 +2,9 @@ package net.octoberserver.ordersystem.admin.payments;
 
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataDAO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import net.octoberserver.ordersystem.admin.payments.dao.PatchPaymentApproveDAO;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -20,5 +17,10 @@ public class PaymentsController {
     @GetMapping
     List<GetPaymentDataDAO.Response> getPaymentData(@RequestBody GetPaymentDataDAO.Request request) {
         return paymentsService.getPaymentData(request);
+    }
+
+    @PatchMapping
+    void patchPaymentApprove(@RequestBody PatchPaymentApproveDAO request) {
+        paymentsService.patchPaymentApprove(request);
     }
 }

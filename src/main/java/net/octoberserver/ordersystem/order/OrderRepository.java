@@ -1,7 +1,6 @@
 package net.octoberserver.ordersystem.order;
 
 import jakarta.persistence.Tuple;
-import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataDAO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +15,6 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
 
     @Query("SELECT u, o FROM AppUser u INNER JOIN OrderData o ON u.ID = o.userID WHERE o.date = :date")
     List<Tuple> findOrdersWithUsersByDate(@Param("date") LocalDate date);
+
+    OrderData findByDateAndUserID(LocalDate date, long userID);
 }

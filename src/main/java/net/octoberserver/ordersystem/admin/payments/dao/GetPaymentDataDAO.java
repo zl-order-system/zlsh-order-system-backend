@@ -20,7 +20,7 @@ public class GetPaymentDataDAO {
     @Builder
     @AllArgsConstructor
     public static class Response {
-        private long id;
+        private long userID;
         private String name;
         private short seatNumber;
         private String lunchBoxType;
