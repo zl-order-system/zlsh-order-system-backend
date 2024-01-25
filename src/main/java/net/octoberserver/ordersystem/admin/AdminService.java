@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AdminService {
+
     final MealRepository mealRepository;
 
     public List<LocalDate> getUpcomingDates() {

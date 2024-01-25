@@ -12,6 +12,7 @@ import java.util.List;
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class AdminController {
+
     private final AdminService adminService;
 
     @GetMapping("/upcoming-dates")

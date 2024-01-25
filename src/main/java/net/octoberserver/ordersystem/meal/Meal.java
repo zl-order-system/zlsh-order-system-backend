@@ -21,6 +21,6 @@ import java.util.List;
 public class Meal {
     @Id
     private LocalDate date;
-    @Convert(converter = ListToJsonConverter.class)
-    private List<MealOptionDTO> options;
+    @Convert(converter = MealOptionConverter.class)
+    private List<MealOption> options;
 }

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @RequestMapping("/api/admin/meal")
 @RequiredArgsConstructor
 public class MealController {
+
     private final MealService mealService;
 
     @GetMapping("/detailed")

@@ -2,13 +2,11 @@ package net.octoberserver.ordersystem.order;
 
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
-import net.octoberserver.ordersystem.common.LunchBoxType;
+import net.octoberserver.ordersystem.common.LunchBoxService;
 import net.octoberserver.ordersystem.meal.Meal;
-import net.octoberserver.ordersystem.meal.MealOptionDTO;
+import net.octoberserver.ordersystem.meal.MealOption;
 import net.octoberserver.ordersystem.order.dao.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +16,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private final LunchBoxService lunchBoxService;
+
     public GetHomeDataDAO processHomeData(List<Tuple> mealOrders, LocalDate today) {
         final var headerData = new GetHomeDataDAO.BannerData(today, false, 0, 0);
         mealOrders.forEach(mealOrder -> {
@@ -26,7 +26,7 @@ public class OrderService {
                 return;
             }
             if (!orderData.isPaid()) {
-                headerData.setOwed(headerData.getOwed() + getPrice(orderData.getLunchBox()));
+                headerData.setOwed(headerData.getOwed() + lunchBoxService.getPrice(orderData.getLunchBox()));
             }
             if (orderData.getDate().equals(today)) {
                 headerData.setHasPaidToday(orderData.isPaid());
@@ -57,7 +57,7 @@ public class OrderService {
             final OrderData orderData = mealOrder.get(1, OrderData.class);
             final LocalDate date = meal.getDate();
             final String displayDate = date.toString();
-            final List<MealOptionDTO> mealOptions = meal.getOptions();
+            final List<MealOption> mealOptions = meal.getOptions();
 
             if (orderData == null) {
                 daoOrderItems.add(GetOrderDataDAO.DaoOrderItem
@@ -76,7 +76,7 @@ public class OrderService {
                 return;
             }
 
-            final int price = getPrice(orderData.getLunchBox());
+            final int price = lunchBoxService.getPrice(orderData.getLunchBox());
 
             final String orderState;
             if (orderData.isPaid()) {
@@ -95,33 +95,11 @@ public class OrderService {
                 .mealOptions(mealOptions)
                 .state(orderState)
                 .price(Integer.toString(price))
-                .lunchBox(getLunchBoxString(orderData.getLunchBox()))
+                .lunchBox(lunchBoxService.getLunchBoxString(orderData.getLunchBox()))
                 .selectedMeal(Short.toString(orderData.getMeal()))
                 .build()
             );
         });
         return new GetOrderDataDAO(headerData, daoOrderItems);
-    }
-
-    public int getPrice(LunchBox lunchBox) {
-        return switch (lunchBox) {
-            case PERSONAL -> 65;
-            case SCHOOL -> 70;
-        };
-    }
-
-    public String getLunchBoxString(LunchBox lunchBox) {
-        return switch (lunchBox) {
-            case PERSONAL -> LunchBoxType.PERSONAL;
-            case SCHOOL -> LunchBoxType.SCHOOL;
-        };
-    }
-
-    public LunchBox getLunchBoxEnum(String string) {
-        return switch (string) {
-            case LunchBoxType.PERSONAL -> LunchBox.PERSONAL;
-            case LunchBoxType.SCHOOL -> LunchBox.SCHOOL;
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Lunch Box Type: " + string);
-        };
     }
 }

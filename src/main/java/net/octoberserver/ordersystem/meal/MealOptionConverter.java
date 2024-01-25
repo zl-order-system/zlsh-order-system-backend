@@ -1,21 +1,20 @@
-package net.octoberserver.ordersystem.common;
+package net.octoberserver.ordersystem.meal;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import net.octoberserver.ordersystem.meal.MealOption;
 
 import java.util.List;
 
 @Converter
-public class ListToJsonConverter<T> implements AttributeConverter<List<T>, String> {
+public class MealOptionConverter implements AttributeConverter<List<MealOption>, String> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String convertToDatabaseColumn(List<T> list) {
+    public String convertToDatabaseColumn(List<MealOption> list) {
         try {
             return objectMapper.writeValueAsString(list);
         } catch (JsonProcessingException e) {
@@ -24,9 +23,9 @@ public class ListToJsonConverter<T> implements AttributeConverter<List<T>, Strin
     }
 
     @Override
-    public List<T> convertToEntityAttribute(String jsonString) {
+    public List<MealOption> convertToEntityAttribute(String jsonString) {
         try {
-            return objectMapper.readValue(jsonString, new TypeReference<List<T>>() {});
+            return objectMapper.readValue(jsonString, new TypeReference<List<MealOption>>() {});
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
