@@ -3,7 +3,7 @@ package net.octoberserver.ordersystem.admin.payments;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataRequestDAO;
 import net.octoberserver.ordersystem.admin.payments.dao.PatchPaymentApproveDAO;
-import net.octoberserver.ordersystem.common.LunchBoxService;
+import net.octoberserver.ordersystem.order.LunchBoxService;
 import net.octoberserver.ordersystem.meal.MealOption;
 import net.octoberserver.ordersystem.meal.MealRepository;
 import net.octoberserver.ordersystem.order.OrderData;
@@ -19,15 +19,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PaymentsService {
 
-    private final OrderRepository orderRepository;
-    private final MealRepository mealRepository;
     private final LunchBoxService lunchBoxService;
+    private final MealRepository mealRepository;
+    private final OrderRepository orderRepository;
 
     List<GetPaymentDataRequestDAO.Response> getPaymentData(GetPaymentDataRequestDAO.Request request) {
         final var options = mealRepository
             .findById(request.getDate())
-            .orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"))
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"))
             .getOptions()
             .stream().map(MealOption::getName)
             .toList();
@@ -40,7 +39,7 @@ public class PaymentsService {
                 .name(user.getName())
                 .seatNumber(user.getSeatNumber())
                 .lunchBoxType(lunchBoxService.getLunchBoxString(order.getLunchBox()))
-                .mealName(options.get(order.getMeal()))
+                .mealName(options.get(order.getMealOption()))
                 .paid(order.isPaid())
                 .build();
         }).toList();

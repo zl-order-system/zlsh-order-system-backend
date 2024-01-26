@@ -1,6 +1,5 @@
-package net.octoberserver.ordersystem.common;
+package net.octoberserver.ordersystem.order;
 
-import net.octoberserver.ordersystem.order.LunchBox;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

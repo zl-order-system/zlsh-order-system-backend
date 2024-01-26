@@ -5,37 +5,30 @@ import net.octoberserver.ordersystem.order.dao.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/order")
 public class OrderController {
 
-    private final OrderPersistentService orderPersistentService;
-
-    @GetMapping("/home")
-    GetHomeDataDAO getHomeData() {
-        return orderPersistentService.getHomeData(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()), LocalDate.now());
-    }
+    private final OrderService orderService;
 
     @GetMapping
     GetOrderDataDAO getOrderData() {
-        return orderPersistentService.getOrderData(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return orderService.getOrderData(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
     @PostMapping
     CreateOrderDataResponseDAO createOrderData(@RequestBody CreateOrderDataRequestDAO request) {
-        return orderPersistentService.createOrderData(request, Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return orderService.createOrderData(request, Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
     @PatchMapping
     void updateOrderData(@RequestBody UpdateOrderDataRequestDAO request) {
-        orderPersistentService.updateOrderData(request);
+        orderService.updateOrderData(request);
     }
 
     @DeleteMapping
     void deleteOrderData(@RequestBody DeleteOrderDataDAO request) {
-        orderPersistentService.deleteOrderData(request);
+        orderService.deleteOrderData(request);
     }
 }

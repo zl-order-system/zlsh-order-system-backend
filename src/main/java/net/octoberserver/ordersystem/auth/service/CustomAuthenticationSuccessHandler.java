@@ -14,10 +14,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Component
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+    private static final String REDIRECT_URI = "/";
 
     private final JWTService jwtService;
-
-    private final String redirectUri = "/";
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -28,7 +27,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         final String token = jwtService.generateToken((AppUser) authentication.getPrincipal());
-        final String targetUrl = UriComponentsBuilder.fromUriString(redirectUri).queryParam("token", token).build().toUriString();
+        final String targetUrl = UriComponentsBuilder.fromUriString(REDIRECT_URI).queryParam("token", token).build().toUriString();
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

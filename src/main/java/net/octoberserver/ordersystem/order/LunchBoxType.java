@@ -1,4 +1,4 @@
-package net.octoberserver.ordersystem.common;
+package net.octoberserver.ordersystem.order;
 
 public class LunchBoxType {
     public static final String SCHOOL = "學校餐盒";

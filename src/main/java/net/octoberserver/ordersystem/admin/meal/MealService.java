@@ -20,16 +20,14 @@ public class MealService {
         return new GetMealDetailedResponseDAO(
             mealRepository
                 .findById(date)
-                .orElseThrow(() ->
-                    new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find data for that date"))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find data for that date"))
                 .getOptions());
     }
 
     void patchMealDetailed(PatchMealDetailedRequestDAO request) {
         final var meal = mealRepository
             .findById(request.getDate())
-            .orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Meal not found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meal not found"));
         meal.setOptions(request.getOptions());
         try {
             mealRepository.save(meal);

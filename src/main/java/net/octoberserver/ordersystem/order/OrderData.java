@@ -21,7 +21,7 @@ public class OrderData {
     @Id
     private UUID ID;
     private long userID;
-    private short meal;
+    private short mealOption;
     private LocalDate date;
     @Enumerated(EnumType.STRING)
     private LunchBox lunchBox;
