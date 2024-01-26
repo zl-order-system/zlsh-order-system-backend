@@ -1,7 +1,7 @@
 package net.octoberserver.ordersystem.admin.payments;
 
 import lombok.RequiredArgsConstructor;
-import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataDAO;
+import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataRequestDAO;
 import net.octoberserver.ordersystem.admin.payments.dao.PatchPaymentApproveDAO;
 import net.octoberserver.ordersystem.common.LunchBoxService;
 import net.octoberserver.ordersystem.meal.MealOption;
@@ -23,7 +23,7 @@ public class PaymentsService {
     private final MealRepository mealRepository;
     private final LunchBoxService lunchBoxService;
 
-    List<GetPaymentDataDAO.Response> getPaymentData(GetPaymentDataDAO.Request request) {
+    List<GetPaymentDataRequestDAO.Response> getPaymentData(GetPaymentDataRequestDAO.Request request) {
         final var options = mealRepository
             .findById(request.getDate())
             .orElseThrow(() ->
@@ -35,7 +35,7 @@ public class PaymentsService {
         return orderRepository.findOrdersWithUsersByDate(request.getDate()).stream().map(userOrder -> {
             final var user = userOrder.get(0, AppUser.class);
             final var order = userOrder.get(1, OrderData.class);
-            return GetPaymentDataDAO.Response.builder()
+            return GetPaymentDataRequestDAO.Response.builder()
                 .userID(user.getID())
                 .name(user.getName())
                 .seatNumber(user.getSeatNumber())

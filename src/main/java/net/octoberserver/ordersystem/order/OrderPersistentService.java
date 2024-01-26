@@ -27,8 +27,8 @@ public class OrderPersistentService {
         return orderService.processOrderData(orderRepository.findUpcomingMealsWithOrders(userID));
     }
 
-    public CreateOrderDataDAO.Response createOrderData(CreateOrderDataDAO.Request request, long userID) {
-        return new CreateOrderDataDAO.Response(orderRepository.save(OrderData.builder()
+    public CreateOrderDataResponseDAO createOrderData(CreateOrderDataRequestDAO request, long userID) {
+        return new CreateOrderDataResponseDAO(orderRepository.save(OrderData.builder()
             .date(request.date())
             .lunchBox(lunchBoxService.getLunchBoxEnum(request.lunchBoxType()))
             .userID(userID)
@@ -38,7 +38,7 @@ public class OrderPersistentService {
         ).getID());
     }
 
-    public void updateOrderData(UpdateOrderDataDAO request) {
+    public void updateOrderData(UpdateOrderDataRequestDAO request) {
         final var orderData = orderRepository
             .findById(request.id())
             .orElseThrow(() ->

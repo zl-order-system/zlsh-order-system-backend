@@ -4,14 +4,14 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.UUID;
+import java.time.LocalDate;
 
-public record UpdateOrderDataDAO(
+public record CreateOrderDataRequestDAO(
     @NotNull
-    UUID id,
+    LocalDate date,
     @NotBlank
     String lunchBoxType,
     @Min(0)
     short selectedMeal
-) {}
-
+) {
+}

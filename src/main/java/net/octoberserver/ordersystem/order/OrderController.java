@@ -25,12 +25,12 @@ public class OrderController {
     }
 
     @PostMapping
-    CreateOrderDataDAO.Response createOrderData(@RequestBody CreateOrderDataDAO.Request request) {
+    CreateOrderDataResponseDAO createOrderData(@RequestBody CreateOrderDataRequestDAO request) {
         return orderPersistentService.createOrderData(request, Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
     @PatchMapping
-    void updateOrderData(@RequestBody UpdateOrderDataDAO request) {
+    void updateOrderData(@RequestBody UpdateOrderDataRequestDAO request) {
         orderPersistentService.updateOrderData(request);
     }
 
