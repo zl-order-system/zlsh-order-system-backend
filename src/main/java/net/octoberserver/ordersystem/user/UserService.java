@@ -19,17 +19,17 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final LunchBoxService lunchBoxService;
-    private final RoleService roleService;
     private final AppUserRepository userRepository;
     private final OrderRepository orderRepository;
 
     GetHomeDataResponseDAO getHomeData(long userID) {
         final var result = processHomeData(orderRepository.findUpcomingMealsWithOrders(userID), LocalDate.now());
-        result.setRole(roleService.roleToString(
+        result.setRole(
             userRepository
                 .findById(userID)
                 .orElseThrow()
-                .getRole())
+                .getRole()
+                .name()
         );
         return result;
     }
