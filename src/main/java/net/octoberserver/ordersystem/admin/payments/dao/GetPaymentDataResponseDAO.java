@@ -4,16 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+@Data
+@Builder
+@AllArgsConstructor
 public class GetPaymentDataResponseDAO {
-    @Data
-    @Builder
-    @AllArgsConstructor
-    public static class Response {
-        private long userID;
-        private String name;
-        private short seatNumber;
-        private String lunchBoxType;
-        private String mealName;
-        private boolean paid;
-    }
+    private long userID;
+    private String name;
+    private short seatNumber;
+    private String lunchBoxType;
+    private String mealName;
+    private boolean paid;
 }

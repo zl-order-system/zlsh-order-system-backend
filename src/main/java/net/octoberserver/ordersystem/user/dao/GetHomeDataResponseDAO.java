@@ -1,4 +1,4 @@
-package net.octoberserver.ordersystem.order.dao;
+package net.octoberserver.ordersystem.user.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class GetHomeDataDAO {
+public class GetHomeDataResponseDAO {
     @Data
     @AllArgsConstructor
     public static class BannerData {

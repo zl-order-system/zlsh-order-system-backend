@@ -21,7 +21,7 @@ public class OrderService {
     private final MealRepository mealRepository;
     private final OrderRepository orderRepository;
 
-    public GetOrderDataDAO getOrderData(long userID) {
+    public GetOrderDataResponseDAO getOrderData(long userID) {
         return processOrderData(orderRepository.findUpcomingMealsWithOrders(userID));
     }
 
@@ -53,7 +53,7 @@ public class OrderService {
         orderRepository.save(orderData);
     }
 
-    public void deleteOrderData(DeleteOrderDataDAO request) {
+    public void deleteOrderData(DeleteOrderDataRequestDAO request) {
         try {
             orderRepository.deleteById(request.id());
         } catch (Exception e) {
@@ -61,9 +61,9 @@ public class OrderService {
         }
     }
 
-    public GetOrderDataDAO processOrderData(List<Tuple> mealOrders) {
-        final var headerData = new GetOrderDataDAO.HeaderData(0, 0, 0);
-        final var daoOrderItems = new ArrayList<GetOrderDataDAO.DaoOrderItem>();
+    public GetOrderDataResponseDAO processOrderData(List<Tuple> mealOrders) {
+        final var headerData = new GetOrderDataResponseDAO.HeaderData(0, 0, 0);
+        final var daoOrderItems = new ArrayList<GetOrderDataResponseDAO.DaoOrderItem>();
 
         mealOrders.forEach(mealOrder -> {
             final Meal meal = mealOrder.get(0, Meal.class);
@@ -73,7 +73,7 @@ public class OrderService {
             final List<MealOption> mealOptions = meal.getOptions();
 
             if (orderData == null) {
-                daoOrderItems.add(GetOrderDataDAO.DaoOrderItem
+                daoOrderItems.add(GetOrderDataResponseDAO.DaoOrderItem
                     .builder()
                     .date(date)
                     .displayDate(displayDate)
@@ -100,7 +100,7 @@ public class OrderService {
                 headerData.setOwed(headerData.getOwed() + price);
             }
 
-            daoOrderItems.add(GetOrderDataDAO.DaoOrderItem
+            daoOrderItems.add(GetOrderDataResponseDAO.DaoOrderItem
                 .builder()
                 .date(date)
                 .displayDate(displayDate)
@@ -113,6 +113,6 @@ public class OrderService {
                 .build()
             );
         });
-        return new GetOrderDataDAO(headerData, daoOrderItems);
+        return new GetOrderDataResponseDAO(headerData, daoOrderItems);
     }
 }

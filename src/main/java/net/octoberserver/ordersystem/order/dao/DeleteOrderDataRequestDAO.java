@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public record DeleteOrderDataDAO(
+public record DeleteOrderDataRequestDAO(
     @NotNull
     UUID id
 ) {}

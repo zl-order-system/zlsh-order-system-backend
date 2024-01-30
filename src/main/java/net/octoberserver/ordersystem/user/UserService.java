@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.meal.Meal;
 import net.octoberserver.ordersystem.order.LunchBoxService;
 import net.octoberserver.ordersystem.order.OrderData;
-import net.octoberserver.ordersystem.order.dao.GetHomeDataDAO;
+import net.octoberserver.ordersystem.order.OrderRepository;
+import net.octoberserver.ordersystem.user.dao.GetAccountDataResponseDAO;
+import net.octoberserver.ordersystem.user.dao.GetHomeDataResponseDAO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,9 +19,36 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final LunchBoxService lunchBoxService;
+    private final RoleService roleService;
+    private final AppUserRepository userRepository;
+    private final OrderRepository orderRepository;
 
-    public GetHomeDataDAO processHomeData(List<Tuple> mealOrders, LocalDate today) {
-        final var headerData = new GetHomeDataDAO.BannerData(today, false, 0, 0);
+    GetHomeDataResponseDAO getHomeData(long userID) {
+        final var result = processHomeData(orderRepository.findUpcomingMealsWithOrders(userID), LocalDate.now());
+        result.setRole(roleService.roleToString(
+            userRepository
+                .findById(userID)
+                .orElseThrow()
+                .getRole())
+        );
+        return result;
+    }
+
+    GetAccountDataResponseDAO getAccountData(long userID) {
+        final var user = userRepository.findById(userID).orElseThrow();
+        return GetAccountDataResponseDAO.builder()
+            .avatarUrl("")
+            .name(user.getName())
+            .id(userID)
+            .googleName(user.googleName)
+            .email(user.getEmail())
+            .classNumber(user.getClassNumber())
+            .seatNumber(user.getSeatNumber())
+            .build();
+    }
+
+    public GetHomeDataResponseDAO processHomeData(List<Tuple> mealOrders, LocalDate today) {
+        final var headerData = new GetHomeDataResponseDAO.BannerData(today, false, 0, 0);
         mealOrders.forEach(mealOrder -> {
             final OrderData orderData = mealOrder.get(1, OrderData.class);
             if (orderData == null) {
@@ -40,11 +69,11 @@ public class UserService {
                 var meal = mealOrder.get(0, Meal.class);
                 var orderData = mealOrder.get(1, OrderData.class);
                 if (orderData == null) {
-                    return new GetHomeDataDAO.PreviewData(meal.getDate(), false);
+                    return new GetHomeDataResponseDAO.PreviewData(meal.getDate(), false);
                 }
-                return new GetHomeDataDAO.PreviewData(orderData.getDate(), true);
+                return new GetHomeDataResponseDAO.PreviewData(orderData.getDate(), true);
             })
             .collect(Collectors.toList());
-        return new GetHomeDataDAO("", headerData, bodyData);
+        return new GetHomeDataResponseDAO("", headerData, bodyData);
     }
 }

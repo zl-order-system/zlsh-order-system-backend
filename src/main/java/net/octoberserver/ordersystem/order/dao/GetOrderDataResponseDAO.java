@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class GetOrderDataDAO {
+public class GetOrderDataResponseDAO {
     @Data
     @AllArgsConstructor
     public static class HeaderData {

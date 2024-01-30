@@ -2,7 +2,8 @@ package net.octoberserver.ordersystem.admin.payments;
 
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataRequestDAO;
-import net.octoberserver.ordersystem.admin.payments.dao.PatchPaymentApproveDAO;
+import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataResponseDAO;
+import net.octoberserver.ordersystem.admin.payments.dao.UpdatePaymentStatusRequestDAO;
 import net.octoberserver.ordersystem.order.LunchBoxService;
 import net.octoberserver.ordersystem.meal.MealOption;
 import net.octoberserver.ordersystem.meal.MealRepository;
@@ -23,7 +24,7 @@ public class PaymentsService {
     private final MealRepository mealRepository;
     private final OrderRepository orderRepository;
 
-    List<GetPaymentDataRequestDAO.Response> getPaymentData(GetPaymentDataRequestDAO.Request request) {
+    List<GetPaymentDataResponseDAO> getPaymentData(GetPaymentDataRequestDAO request) {
         final var options = mealRepository
             .findById(request.getDate())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"))
@@ -34,7 +35,7 @@ public class PaymentsService {
         return orderRepository.findOrdersWithUsersByDate(request.getDate()).stream().map(userOrder -> {
             final var user = userOrder.get(0, AppUser.class);
             final var order = userOrder.get(1, OrderData.class);
-            return GetPaymentDataRequestDAO.Response.builder()
+            return GetPaymentDataResponseDAO.builder()
                 .userID(user.getID())
                 .name(user.getName())
                 .seatNumber(user.getSeatNumber())
@@ -45,7 +46,7 @@ public class PaymentsService {
         }).toList();
     }
 
-    void patchPaymentApprove(PatchPaymentApproveDAO request) {
+    void updatePaymentStatus(UpdatePaymentStatusRequestDAO request) {
         final var orderData = orderRepository.findByDateAndUserID(request.getDate(), request.getUserID());
         orderData.setPaid(request.isPaid());
         orderRepository.save(orderData);

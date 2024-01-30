@@ -13,7 +13,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    GetOrderDataDAO getOrderData() {
+    GetOrderDataResponseDAO getOrderData() {
         return orderService.getOrderData(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
@@ -28,7 +28,7 @@ public class OrderController {
     }
 
     @DeleteMapping
-    void deleteOrderData(@RequestBody DeleteOrderDataDAO request) {
+    void deleteOrderData(@RequestBody DeleteOrderDataRequestDAO request) {
         orderService.deleteOrderData(request);
     }
 }

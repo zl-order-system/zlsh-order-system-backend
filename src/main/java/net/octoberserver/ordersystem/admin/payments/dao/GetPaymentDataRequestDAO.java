@@ -1,16 +1,20 @@
 package net.octoberserver.ordersystem.admin.payments.dao;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-public class GetPaymentDataRequestDAO extends GetPaymentDataResponseDAO {
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Request {
-        private LocalDate date;
-    }
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class GetPaymentDataRequestDAO {
+    @Future
+    @NotNull
+    private LocalDate date;
 }

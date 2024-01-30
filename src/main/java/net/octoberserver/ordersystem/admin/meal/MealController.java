@@ -2,7 +2,7 @@ package net.octoberserver.ordersystem.admin.meal;
 
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.meal.dao.GetMealDetailedResponseDAO;
-import net.octoberserver.ordersystem.admin.meal.dao.PatchMealDetailedRequestDAO;
+import net.octoberserver.ordersystem.admin.meal.dao.UpdateMealDetailedRequestDAO;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ public class MealController {
     }
 
     @PatchMapping("/detailed")
-    void patchMealDetailed(@RequestBody PatchMealDetailedRequestDAO request) {
+    void patchMealDetailed(@RequestBody UpdateMealDetailedRequestDAO request) {
         mealService.patchMealDetailed(request);
     }
 }

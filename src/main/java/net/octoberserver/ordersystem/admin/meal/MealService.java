@@ -2,7 +2,7 @@ package net.octoberserver.ordersystem.admin.meal;
 
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.meal.dao.GetMealDetailedResponseDAO;
-import net.octoberserver.ordersystem.admin.meal.dao.PatchMealDetailedRequestDAO;
+import net.octoberserver.ordersystem.admin.meal.dao.UpdateMealDetailedRequestDAO;
 import net.octoberserver.ordersystem.meal.MealRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class MealService {
                 .getOptions());
     }
 
-    void patchMealDetailed(PatchMealDetailedRequestDAO request) {
+    void patchMealDetailed(UpdateMealDetailedRequestDAO request) {
         final var meal = mealRepository
             .findById(request.getDate())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meal not found"));
