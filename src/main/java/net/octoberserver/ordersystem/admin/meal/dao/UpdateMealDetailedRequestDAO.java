@@ -1,5 +1,6 @@
 package net.octoberserver.ordersystem.admin.meal.dao;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -14,9 +15,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateMealDetailedRequestDAO {
-    @NotNull
     @Future
+    @NotNull
     private LocalDate date;
+    @Valid
     @NotNull
     private List<MealOption> options;
 }

@@ -24,7 +24,7 @@ public class MealService {
                 .getOptions());
     }
 
-    void patchMealDetailed(UpdateMealDetailedRequestDAO request) {
+    void updateMealDetailed(UpdateMealDetailedRequestDAO request) {
         final var meal = mealRepository
             .findById(request.getDate())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meal not found"));

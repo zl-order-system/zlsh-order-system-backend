@@ -1,5 +1,6 @@
 package net.octoberserver.ordersystem.admin.payments;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataRequestDAO;
 import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataResponseDAO;
@@ -16,12 +17,12 @@ public class PaymentsController {
     private final PaymentsService paymentsService;
 
     @GetMapping
-    List<GetPaymentDataResponseDAO> getPaymentData(@RequestBody GetPaymentDataRequestDAO request) {
+    List<GetPaymentDataResponseDAO> getPaymentData(@RequestBody @Valid GetPaymentDataRequestDAO request) {
         return paymentsService.getPaymentData(request);
     }
 
     @PatchMapping
-    void updatePaymentStatus(@RequestBody UpdatePaymentStatusRequestDAO request) {
+    void updatePaymentStatus(@RequestBody @Valid UpdatePaymentStatusRequestDAO request) {
         paymentsService.updatePaymentStatus(request);
     }
 }

@@ -3,8 +3,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/order_system
-    username: postgres
-    password: pass1234
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     generate-ddl: true
     show-sql: true
@@ -18,8 +18,8 @@ spring:
       client:
         registration:
           google:
-            client-id: 45831608789-7bda4ggcovrm54k2hmf4l7leulhuuonh.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
               - email
               - profile

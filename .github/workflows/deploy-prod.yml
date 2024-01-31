@@ -1,0 +1,41 @@
+name: Publish to Production
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/backend:prod-latest
+
+jobs:
+  publish:
+    name: Publish Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+      - name: Build and Publish
+        run: |
+          docker build . --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+  deploy:
+    needs: publish
+    name: Deploy Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install SSH Keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      - name: Connect and Pull
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && docker compose pull && docker compose up -d && exit"
+      - name: Cleanup Credentials
+        run: rm -rf ~/.ssh

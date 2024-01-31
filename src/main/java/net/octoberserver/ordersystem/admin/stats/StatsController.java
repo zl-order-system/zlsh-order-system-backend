@@ -1,5 +1,6 @@
 package net.octoberserver.ordersystem.admin.stats;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.stats.dao.GetStatDataRequestDAO;
 import net.octoberserver.ordersystem.admin.stats.dao.GetStatDataResponseDAO;
@@ -18,7 +19,7 @@ public class StatsController {
     private final StatsService statsService;
 
     @GetMapping
-    List<GetStatDataResponseDAO> getStatData(@RequestBody GetStatDataRequestDAO request) {
+    List<GetStatDataResponseDAO> getStatData(@RequestBody @Valid GetStatDataRequestDAO request) {
         return statsService.getStatData(request);
     }
 }

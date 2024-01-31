@@ -1,5 +1,6 @@
 package net.octoberserver.ordersystem.order;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.order.dao.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,17 +19,17 @@ public class OrderController {
     }
 
     @PostMapping
-    CreateOrderDataResponseDAO createOrderData(@RequestBody CreateOrderDataRequestDAO request) {
+    CreateOrderDataResponseDAO createOrderData(@RequestBody @Valid CreateOrderDataRequestDAO request) {
         return orderService.createOrderData(request, Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
     @PatchMapping
-    void updateOrderData(@RequestBody UpdateOrderDataRequestDAO request) {
+    void updateOrderData(@RequestBody @Valid UpdateOrderDataRequestDAO request) {
         orderService.updateOrderData(request);
     }
 
     @DeleteMapping
-    void deleteOrderData(@RequestBody DeleteOrderDataRequestDAO request) {
+    void deleteOrderData(@RequestBody @Valid DeleteOrderDataRequestDAO request) {
         orderService.deleteOrderData(request);
     }
 }
