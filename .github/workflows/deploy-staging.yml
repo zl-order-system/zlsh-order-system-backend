@@ -8,6 +8,8 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/backend:taging-latest
   WORK_DIR: /home/order-system/order-system-backend/taging
+  CONTAINER_NAME: order-system-backend
+  CONTAINER_NETWORK: nginx_proxied
 
 jobs:
   publish:
@@ -59,6 +61,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             newgrp docker
-            docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            docker run --restart=always --name ${{ env.CONTAINER_NAME }} --network ${{ env.CONTAINER_NETWORK }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - name: Cleanup Credentials
         run: rm -rf ~/.ssh
