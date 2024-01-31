@@ -18,7 +18,6 @@ jobs:
       - name: Login
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
-          - name: Build and Publish
       - name: Build Application
         run: ./gradlew clean build
       - name: Build and Publish Image
