@@ -1,7 +1,7 @@
 services:
   order-system-backend:
     container_name: order-system-backend
-    image: ghcr.io/zl-order-system/backend:latest
+    image: ghcr.io/zl-order-system/backend:prod-latest
     networks:
       - nginx_proxied
 
