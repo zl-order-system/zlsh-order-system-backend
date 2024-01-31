@@ -1,0 +1,64 @@
+name: Publish to Staging
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/backend:taging-latest
+  WORK_DIR: /home/order-system/order-system-backend/taging
+
+jobs:
+  publish:
+    name: Publish Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: temurin
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@749f47bda3e44aa060e82d7b3ef7e40d953bd629
+        with:
+          arguments: build
+      - name: Build and Publish Image
+        run: |
+          docker build . --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+  deploy:
+    needs: publish
+    name: Deploy Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install SSH Keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      - name: Connect and Pull
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ env.WORK_DIR }} && newgrp docker && wget -O docker-compose.yml https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/docker-compose/prod.yml && docker compose pull && docker compose up -d && exit"
+      - name: Deploy Application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            newgrp docker
+            docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Cleanup Credentials
+        run: rm -rf ~/.ssh
