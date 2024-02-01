@@ -3,11 +3,11 @@ services:
     container_name: order-system-backend-staging
     image: ghcr.io/zl-order-system/backend:staging-latest
     environment:
-      GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      DB_USERNAME=${DB_USERNAME}
-      DB_PASSWORD=${DB_PASSWORD}
-      DB_URL=${DB_URL}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_URL: ${DB_URL}
     networks:
       - nginx_proxied
       - order-system
