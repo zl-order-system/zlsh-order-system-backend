@@ -57,7 +57,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-            export CONTAINER_NAME=$${{env.CONTAINER_NAME}}
+            export CONTAINER_NAME=${{env.CONTAINER_NAME}}
             export GOOGLE_CLIENT_ID=${{ secrets.PROD_GOOGLE_CLIENT_ID }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}
             export DB_USERNAME=${{ secrets.PROD_DB_USERNAME }}

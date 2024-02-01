@@ -1,11 +1,11 @@
 name: Publish to Staging
 
 on:
-    push:
-      branches: [ main ]
-    pull_request:
-        types: [ closed ]
-        branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [ closed ]
+    branches: [ main ]
 
 env:
   REGISTRY: ghcr.io
@@ -57,7 +57,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-            export CONTAINER_NAME=$${{env.CONTAINER_NAME}}
+            export CONTAINER_NAME=${{env.CONTAINER_NAME}}
             export GOOGLE_CLIENT_ID=${{ secrets.STAGING_GOOGLE_CLIENT_ID }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.STAGING_GOOGLE_CLIENT_SECRET }}
             export DB_USERNAME=${{ secrets.STAGING_DB_USERNAME }}
