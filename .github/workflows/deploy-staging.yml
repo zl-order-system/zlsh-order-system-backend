@@ -61,6 +61,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             newgrp docker
+            docker stop ${{ env.CONTAINER_NAME }}
+            docker rm ${{ env.CONTAINER_NAME }}
+            docker image rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
             docker run -d \
             --restart=always \
             --name ${{ env.CONTAINER_NAME }} \
