@@ -2,7 +2,7 @@ name: Publish to Production
 
 on:
   push:
-    branches: [ "prod" ]
+    branches: [ "production" ]
 
 env:
   REGISTRY: ghcr.io

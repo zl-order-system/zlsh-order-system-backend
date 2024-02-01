@@ -10,6 +10,7 @@ env:
   WORK_DIR: /home/order-system/order-system-backend/staging
   CONTAINER_NAME: order-system-backend
   CONTAINER_NETWORK: nginx_proxied
+  STAGING_DB_URL: jdbc:postgresql://order-system-database:5432/order_system_staging
 
 jobs:
   publish:
@@ -60,14 +61,16 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            GOOGLE_CLIENT_ID=${{ secrets.STAGING_GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.STAGING_GOOGLE_CLIENT_SECRET }}
+            DB_USERNAME=${{ secrets.STAGING_DB_USERNAME }}
+            DB_PASSWORD=${{ secrets.STAGING_DB_PASSWORD }}
+            DB_URL=${{ env.STAGING_DB_URL }}
+            cd ${{ env.WORK_DIR }}
             newgrp docker
-            docker stop ${{ env.CONTAINER_NAME }}
-            docker rm ${{ env.CONTAINER_NAME }}
-            docker image rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-            docker run -d \
-            --restart=always \
-            --name ${{ env.CONTAINER_NAME }} \
-            --network ${{ env.CONTAINER_NETWORK }} \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
+            wget -O docker-compose.yml https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/docker-compose/staging.yml
+            docker compose pull
+            docker compose up -d
+            exit
       - name: Cleanup Credentials
         run: rm -rf ~/.ssh
