@@ -1,6 +1,6 @@
 services:
   order-system-backend:
-    container_name: order-system-backend-staging
+    container_name: ${CONTAINER_NAME}
     image: ${IMAGE_NAME}
     environment:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
@@ -11,6 +11,7 @@ services:
     networks:
       - nginx_proxied
       - order-system
+    restart: unless-stopped
 
 networks:
   nginx_proxied:
