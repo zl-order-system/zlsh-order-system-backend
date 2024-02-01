@@ -61,11 +61,11 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            GOOGLE_CLIENT_ID=${{ secrets.STAGING_GOOGLE_CLIENT_ID }}
-            GOOGLE_CLIENT_SECRET=${{ secrets.STAGING_GOOGLE_CLIENT_SECRET }}
-            DB_USERNAME=${{ secrets.STAGING_DB_USERNAME }}
-            DB_PASSWORD=${{ secrets.STAGING_DB_PASSWORD }}
-            DB_URL=${{ env.STAGING_DB_URL }}
+            export GOOGLE_CLIENT_ID=${{ secrets.STAGING_GOOGLE_CLIENT_ID }}
+            export GOOGLE_CLIENT_SECRET=${{ secrets.STAGING_GOOGLE_CLIENT_SECRET }}
+            export DB_USERNAME=${{ secrets.STAGING_DB_USERNAME }}
+            export DB_PASSWORD=${{ secrets.STAGING_DB_PASSWORD }}
+            export DB_URL=${{ env.STAGING_DB_URL }}
             cd ${{ env.WORK_DIR }}
             newgrp docker
             wget -O docker-compose.yml https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/docker-compose/staging.yml
