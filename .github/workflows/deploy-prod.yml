@@ -2,12 +2,18 @@ name: Publish to Production
 
 on:
   push:
-    branches: [ "production" ]
+    branches: [ prod ]
+  pull_request:
+      types: [ closed ]
+      branches: [ prod ]
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/backend:prod-latest
   WORK_DIR: /home/order-system/order-system-backend/prod
+  CONTAINER_NAME: order-system-backend-prod
+  CONTAINER_NETWORK: nginx_proxied
+  PROD_DB_URL: jdbc:postgresql://order-system-database:5432/order_system_prod
 
 jobs:
   publish:
@@ -43,13 +49,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install SSH Keys
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-      - name: Connect and Pull
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ env.WORK_DIR }} && newgrp docker && wget -O docker-compose.yml https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/docker-compose/prod.yml && docker compose pull && docker compose up -d && exit"
-      - name: Cleanup Credentials
-        run: rm -rf ~/.ssh
+      - name: Deploy Application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            export CONTAINER_NAME=$${{env.CONTAINER_NAME}}
+            export GOOGLE_CLIENT_ID=${{ secrets.PROD_GOOGLE_CLIENT_ID }}
+            export GOOGLE_CLIENT_SECRET=${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}
+            export DB_USERNAME=${{ secrets.PROD_DB_USERNAME }}
+            export DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}
+            export DB_URL=${{ env.PROD_DB_URL }}
+            cd ${{ env.WORK_DIR }}
+            newgrp docker
+            wget https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/deploy/docker-compose.yml
+            docker compose pull
+            docker compose up -d
+            exit
