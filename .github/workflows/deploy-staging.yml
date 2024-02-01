@@ -61,6 +61,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             newgrp docker
-            docker run --restart=always --name ${{ env.CONTAINER_NAME }} --network ${{ env.CONTAINER_NETWORK }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            docker run -d \
+            --restart=always \
+            --name ${{ env.CONTAINER_NAME }} \
+            --network ${{ env.CONTAINER_NETWORK }} \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
       - name: Cleanup Credentials
         run: rm -rf ~/.ssh
