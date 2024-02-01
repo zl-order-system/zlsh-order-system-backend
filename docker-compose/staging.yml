@@ -1,7 +1,7 @@
 services:
   order-system-backend:
     container_name: order-system-backend-staging
-    image: ghcr.io/zl-order-system/backend:staging-latest
+    image: ${IMAGE_NAME}
     environment:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}

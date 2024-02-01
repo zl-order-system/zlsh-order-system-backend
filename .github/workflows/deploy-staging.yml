@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/backend:taging-latest
+  IMAGE_NAME: ${{ github.repository_owner }}/backend:staging-latest
   WORK_DIR: /home/order-system/order-system-backend/staging
   CONTAINER_NAME: order-system-backend
   CONTAINER_NETWORK: nginx_proxied
@@ -61,6 +61,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
             export GOOGLE_CLIENT_ID=${{ secrets.STAGING_GOOGLE_CLIENT_ID }}
             export GOOGLE_CLIENT_SECRET=${{ secrets.STAGING_GOOGLE_CLIENT_SECRET }}
             export DB_USERNAME=${{ secrets.STAGING_DB_USERNAME }}
