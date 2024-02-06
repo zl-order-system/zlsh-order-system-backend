@@ -32,5 +32,5 @@ logging:
         http: debug
       hibernate: debug
 october:
-  jwt-key: ${JWT_KEY}
+  jwt-key: aa522a3cd39ebec74fc62a53ea8f5e5b55be57030f58949ef42adf1b64d51904
   frontend-root-url: ${FRONTEND_ROOT_URL}
