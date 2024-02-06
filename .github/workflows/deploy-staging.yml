@@ -15,6 +15,7 @@ env:
   CONTAINER_NETWORK: nginx_proxied
   STAGING_DB_URL: jdbc:postgresql://order-system-database:5432/order_system_staging
   STAGING_FRONTEND_ROOT_URL: https://zl-order-system.github.io/staging/app
+  TEST: test-secret
 
 jobs:
   publish:
@@ -66,8 +67,8 @@ jobs:
             export DB_URL=${{ env.STAGING_DB_URL }}
             export FRONTEND_ROOT_URL=${{ env.STAGING_FRONTEND_ROOT_URL }}
             export JWT_KEY=${{ secrets.STAGING_JWT_KEY }}
-            export LINE_CLIENT_SECRET="line-secret-here"
-            export MEAL_AUTH_SECRET="meal-secret-here"
+            export LINE_CLIENT_SECRET=${{ env.TEST }}
+            export MEAL_AUTH_SECRET=${{ env.TEST }}
 
             cd ${{ env.WORK_DIR }}
             newgrp docker

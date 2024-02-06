@@ -10,8 +10,8 @@ services:
       - DB_URL=${DB_URL}
       - FRONTEND_ROOT_URL=${FRONTEND_ROOT_URL}
       - JWT_KEY=${JWT_KEY}
-      - LINE_CLIENT_SECRET=test-secret
-      - MEAL_AUTH_SECRET=test-secret
+      - LINE_CLIENT_SECRET=${LINE_CLIENT_SECRET}
+      - MEAL_AUTH_SECRET=${MEAL_AUTH_SECRET}
     networks:
       - nginx_proxied
       - order-system
