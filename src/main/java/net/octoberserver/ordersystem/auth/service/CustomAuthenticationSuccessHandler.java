@@ -16,7 +16,7 @@ import java.io.IOException;
 @Component
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Value("${FRONTEND_ROOT_URL}")
+    @Value("${october.frontend-root-url}")
     private final String REDIRECT_URL = "/";
 
     private final JWTService jwtService;
