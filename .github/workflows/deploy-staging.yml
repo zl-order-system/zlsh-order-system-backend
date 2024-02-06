@@ -65,6 +65,7 @@ jobs:
             export DB_PASSWORD=${{ secrets.STAGING_DB_PASSWORD }}
             export DB_URL=${{ env.STAGING_DB_URL }}
             export FRONTEND_ROOT_URL=${{ env.STAGING_FRONTEND_ROOT_URL }}
+            export JWT_KEY=${{ secrets.STAGING_JWT_KEY }}
 
             cd ${{ env.WORK_DIR }}
             newgrp docker

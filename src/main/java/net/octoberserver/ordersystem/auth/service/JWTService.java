@@ -18,7 +18,7 @@ import java.util.function.Function;
 public class JWTService {
 
     @Value("${JWT_KEY}")
-    private final String SIGNING_KEY = "e943eac6985459fc302d77532fd558a347f20c8a70e11ccad053a7a697ebb2d5";
+    private final String SIGNING_KEY = "";
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SIGNING_KEY.getBytes());

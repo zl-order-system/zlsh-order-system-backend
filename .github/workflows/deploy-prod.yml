@@ -65,6 +65,7 @@ jobs:
             export DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}
             export DB_URL=${{ env.PROD_DB_URL }}
             export FRONTEND_ROOT_URL=${{ env.PROD_FRONTEND_ROOT_URL }}
+            export JWT_KEY=${{ secrets.PROD_JWT_KEY }}
 
             cd ${{ env.WORK_DIR }}
             newgrp docker
