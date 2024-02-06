@@ -31,8 +31,3 @@ logging:
         web: debug
         http: debug
       hibernate: debug
-october:
-  jwt-key: aa522a3cd39ebec74fc62a53ea8f5e5b55be57030f58949ef42adf1b64d51904
-  frontend-root-url: ${FRONTEND_ROOT_URL}
-  line-client-secret: ${LINE_CLIENT_SECRET}
-  meal-auth-secret: ${MEAL_AUTH_SECRET}

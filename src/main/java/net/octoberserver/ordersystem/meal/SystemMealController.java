@@ -17,7 +17,7 @@ public class SystemMealController {
 
     final MealRepository mealRepository;
 
-    @Value("${october.meal-auth-secret}")
+    @Value("#{environment.MEAL_AUTH_SECRET}")
     private String mealAuthSecret;
 
     @PutMapping
