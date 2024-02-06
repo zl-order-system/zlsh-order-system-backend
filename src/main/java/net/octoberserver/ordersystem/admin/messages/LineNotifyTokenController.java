@@ -18,7 +18,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class LineNotifyTokenController {
 
-    @Value("${LINE_CLIENT_SECRET}")
+    @Value("${october.line-client-secret}")
     private final String LINE_CLIENT_SECRET = "";
     private static final String LINE_TOKEN_URL = "https://notify-bot.line.me/oauth/token";
 
