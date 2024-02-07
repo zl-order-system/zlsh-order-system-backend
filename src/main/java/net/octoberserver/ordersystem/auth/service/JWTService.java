@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import net.octoberserver.ordersystem.AppEnv;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +19,8 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JWTService {
 
-    private static final String SIGNING_KEY = System.getenv("JWT_KEY");
-
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SIGNING_KEY.getBytes());
+        return Keys.hmacShaKeyFor(AppEnv.JWT_KEY.getBytes());
     }
 
     public String generateToken(UserDetails user) {

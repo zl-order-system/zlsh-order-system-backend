@@ -17,10 +17,6 @@ import java.util.HashMap;
 @RequestMapping("/api/admin/messages")
 @RequiredArgsConstructor
 public class LineNotifyTokenController {
-    private static final String LINE_CLIENT_ID = System.getenv("LINE_CLIENT_ID");
-    private static final String LINE_CLIENT_SECRET = System.getenv("LINE_CLIENT_SECRET");
-    private static final String LINE_TOKEN_URL = "https://notify-bot.line.me/oauth/token";
-
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

@@ -3,9 +3,8 @@ package net.octoberserver.ordersystem.auth.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import net.octoberserver.ordersystem.OrderSystemApplication;
+import net.octoberserver.ordersystem.AppEnv;
 import net.octoberserver.ordersystem.user.AppUser;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         response.sendRedirect(
             UriComponentsBuilder
-                .fromUriString(OrderSystemApplication.FRONTEND_ROOT_URL)
+                .fromUriString(AppEnv.FRONTEND_ROOT_URL)
                 .queryParam("token", jwtService.generateToken((AppUser) authentication.getPrincipal()))
                 .build()
                 .toUriString()
