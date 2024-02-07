@@ -66,12 +66,10 @@ jobs:
             export DB_URL=${{ env.PROD_DB_URL }}
             export FRONTEND_ROOT_URL=${{ env.PROD_FRONTEND_ROOT_URL }}
             export JWT_KEY=${{ secrets.PROD_JWT_KEY }}
-            export LINE_CLIENT_SECRET=line-secret-here
-            export MEAL_AUTH_SECRET=meal-secret-here
 
             cd ${{ env.WORK_DIR }}
             newgrp docker
-            wget https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/deploy/docker-compose.yml
+            wget -O docker-compose.yml https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/deploy/docker-compose.yml
             docker-compose stop
             docker-compose rm -f
             docker-compose pull
