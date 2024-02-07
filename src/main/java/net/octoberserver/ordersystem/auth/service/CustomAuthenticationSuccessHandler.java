@@ -26,14 +26,13 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        response.sendRedirect(
-            UriComponentsBuilder
-                .fromUriString(AppEnv.FRONTEND_ROOT_URL)
-                .queryParam("token", jwtService.generateToken((AppUser) authentication.getPrincipal()))
-                .build()
-                .toUriString()
-        );
-
+//        response.sendRedirect(
+//            UriComponentsBuilder
+//                .fromUriString(AppEnv.FRONTEND_ROOT_URL)
+//                .queryParam("token", jwtService.generateToken((AppUser) authentication.getPrincipal()))
+//                .build()
+//                .toUriString()
+//        );
         response.sendRedirect(AppEnv.FRONTEND_ROOT_URL + "/#/?token=" + jwtService.generateToken((AppUser) authentication.getPrincipal()));
     }
 }
