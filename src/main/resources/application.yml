@@ -33,3 +33,4 @@ logging:
       hibernate: debug
 october:
   jwt-key: ${JWT_KEY}
+  my-cool-var: ${MY_COOL_VAR}

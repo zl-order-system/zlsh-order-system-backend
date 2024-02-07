@@ -8,6 +8,7 @@ import net.octoberserver.ordersystem.order.OrderData;
 import net.octoberserver.ordersystem.order.OrderRepository;
 import net.octoberserver.ordersystem.user.dao.GetAccountDataResponseDAO;
 import net.octoberserver.ordersystem.user.dao.GetHomeDataResponseDAO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +22,9 @@ public class UserService {
     private final LunchBoxService lunchBoxService;
     private final AppUserRepository userRepository;
     private final OrderRepository orderRepository;
+
+    @Value("${october.my-cool-var}")
+    private final String MY_COOL_VAR = "";
 
     GetHomeDataResponseDAO getHomeData(long userID) {
         final var result = processHomeData(orderRepository.findUpcomingMealsWithOrders(userID), LocalDate.now());
