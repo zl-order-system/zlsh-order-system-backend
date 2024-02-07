@@ -9,8 +9,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_URL=${DB_URL}
       - FRONTEND_ROOT_URL=${FRONTEND_ROOT_URL}
-      - JWT_KEY=1b7c413735bfa514c7c2fea3faaab5a1d7e368b0396af31fe9dbc4e0538e4d49
-      - MY_COOL_VAR=my-cool-var-yay
+      - JWT_KEY=${JWT_KEY}
     networks:
       - nginx_proxied
       - order-system

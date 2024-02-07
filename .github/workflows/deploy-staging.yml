@@ -15,8 +15,6 @@ env:
   CONTAINER_NETWORK: nginx_proxied
   STAGING_DB_URL: jdbc:postgresql://order-system-database:5432/order_system_staging
   STAGING_FRONTEND_ROOT_URL: https://zl-order-system.github.io/staging/app
-  TEST: test-secret
-  STAGING_JWT_KEY: 1b7c413735bfa514c7c2fea3faaab5a1d7e368b0396af31fe9dbc4e0538e4d49
 
 jobs:
   publish:
@@ -67,7 +65,7 @@ jobs:
             export DB_PASSWORD=${{ secrets.STAGING_DB_PASSWORD }}
             export DB_URL=${{ env.STAGING_DB_URL }}
             export FRONTEND_ROOT_URL=${{ env.STAGING_FRONTEND_ROOT_URL }}
-            export JWT_KEY=${{ env.STAGING_JWT_KEY }}
+            export JWT_KEY=${{ secrets.STAGING_JWT_KEY }}
 
             cd ${{ env.WORK_DIR }}
             newgrp docker

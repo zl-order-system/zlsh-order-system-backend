@@ -23,9 +23,6 @@ public class UserService {
     private final AppUserRepository userRepository;
     private final OrderRepository orderRepository;
 
-    @Value("${october.my-cool-var}")
-    private final String MY_COOL_VAR = "";
-
     GetHomeDataResponseDAO getHomeData(long userID) {
         final var result = processHomeData(orderRepository.findUpcomingMealsWithOrders(userID), LocalDate.now());
         result.setRole(
