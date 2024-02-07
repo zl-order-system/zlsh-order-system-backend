@@ -27,8 +27,12 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        final String token = jwtService.generateToken((AppUser) authentication.getPrincipal());
-        final String targetUrl = UriComponentsBuilder.fromUriString(OrderSystemApplication.FRONTEND_ROOT_URL).queryParam("token", token).build().toUriString();
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        response.sendRedirect(
+            UriComponentsBuilder
+                .fromUriString(OrderSystemApplication.FRONTEND_ROOT_URL)
+                .queryParam("token", jwtService.generateToken((AppUser) authentication.getPrincipal()))
+                .build()
+                .toUriString()
+        );
     }
 }
