@@ -31,3 +31,5 @@ logging:
         web: debug
         http: debug
       hibernate: debug
+october:
+  jwt-key: ${JWT_KEY}

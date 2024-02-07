@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    @Value("#{environment.JWT_TOKEN}")
+    @Value("${october.jwt-key}")
     private final String SIGNING_KEY = "";
 
     private SecretKey getSigningKey() {
