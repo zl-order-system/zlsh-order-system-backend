@@ -66,6 +66,9 @@ jobs:
             export DB_URL=${{ env.STAGING_DB_URL }}
             export FRONTEND_ROOT_URL=${{ env.STAGING_FRONTEND_ROOT_URL }}
             export JWT_KEY=${{ secrets.STAGING_JWT_KEY }}
+            export MEAL_AUTH_SECRET=${{ secrets.STAGING_MEAL_AUTH_SECRET }}
+            export LINE_CLIENT_ID=NULL
+            export LINE_CLIENT_SECRET=NULL
 
             cd ${{ env.WORK_DIR }}
             newgrp docker

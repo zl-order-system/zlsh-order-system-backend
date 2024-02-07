@@ -17,12 +17,11 @@ public class SystemMealController {
 
     final MealRepository mealRepository;
 
-//    @Value("#{environment.MEAL_AUTH_SECRET}")
-    private String mealAuthSecret;
+    private static final String AUTH_SECRET = System.getenv("MEAL_AUTH_SECRET");
 
     @PutMapping
     ResponseEntity<Object> createMealData(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @RequestBody List<Meal> request) {
-        if (!authHeader.equals("Bearer " + mealAuthSecret))
+        if (!authHeader.equals("Bearer " + AUTH_SECRET))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         mealRepository.saveAll(request);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

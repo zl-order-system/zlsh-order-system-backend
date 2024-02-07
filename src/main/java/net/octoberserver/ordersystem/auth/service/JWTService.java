@@ -4,10 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +18,9 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JWTService {
 
-    Logger logger = LoggerFactory.getLogger(JWTService.class);
-
     private static final String SIGNING_KEY = System.getenv("JWT_KEY");
 
     private SecretKey getSigningKey() {
-        logger.warn(SIGNING_KEY);
         return Keys.hmacShaKeyFor(SIGNING_KEY.getBytes());
     }
 

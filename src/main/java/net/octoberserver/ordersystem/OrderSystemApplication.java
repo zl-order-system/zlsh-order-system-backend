@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class OrderSystemApplication {
+
+    public static final String FRONTEND_ROOT_URL = System.getenv("FRONTEND_ROOT_URL");
+
     public static void main(String[] args) {
         SpringApplication.run(OrderSystemApplication.class, args);
     }
