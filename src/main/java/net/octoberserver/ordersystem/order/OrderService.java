@@ -113,7 +113,7 @@ public class OrderService {
                 .state(orderState)
                 .price(Integer.toString(price))
                 .lunchBox(lunchBoxService.getLunchBoxString(orderData.getLunchBox()))
-                .selectedMeal(Short.toString(orderData.getMealOption()))
+                .selectedMeal(meal.getOptions().get(orderData.getMealOption()).getName())
                 .build()
             );
         });
