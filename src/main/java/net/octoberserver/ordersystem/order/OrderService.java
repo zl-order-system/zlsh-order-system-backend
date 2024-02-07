@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,14 +27,17 @@ public class OrderService {
     }
 
     public CreateOrderDataResponseDAO createOrderData(CreateOrderDataRequestDAO request, long userID) {
-        return new CreateOrderDataResponseDAO(orderRepository.save(OrderData.builder()
+        final var id = UUID.randomUUID();
+        orderRepository.save(OrderData.builder()
+            .ID(id)
             .date(request.date())
             .lunchBox(lunchBoxService.getLunchBoxEnum(request.lunchBoxType()))
             .userID(userID)
             .mealOption(request.selectedMeal())
             .paid(false)
             .build()
-        ).getID());
+        );
+        return new CreateOrderDataResponseDAO(id);
     }
 
     public void updateOrderData(UpdateOrderDataRequestDAO request) {
