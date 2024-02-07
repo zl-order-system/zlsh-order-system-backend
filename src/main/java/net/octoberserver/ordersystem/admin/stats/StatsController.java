@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.stats.dao.GetStatDataRequestDAO;
 import net.octoberserver.ordersystem.admin.stats.dao.GetStatDataResponseDAO;
+import net.octoberserver.ordersystem.admin.stats.dao.GetStatDetailedDataRequestDAO;
+import net.octoberserver.ordersystem.admin.stats.dao.GetStatDetailedDataResponseDAO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,5 +23,10 @@ public class StatsController {
     @GetMapping
     List<GetStatDataResponseDAO> getStatData(@RequestBody @Valid GetStatDataRequestDAO request) {
         return statsService.getStatData(request);
+    }
+
+    @GetMapping("/detailed")
+    GetStatDetailedDataResponseDAO getStatDetailedData(@RequestBody @Valid GetStatDetailedDataRequestDAO request) {
+        return null;
     }
 }

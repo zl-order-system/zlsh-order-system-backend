@@ -1,5 +1,6 @@
 package net.octoberserver.ordersystem.meal;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.AppEnv;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,7 @@ public class SystemMealController {
     final MealRepository mealRepository;
 
     @PutMapping
-    ResponseEntity<Object> createMealData(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @RequestBody List<Meal> request) {
+    ResponseEntity<Object> createMealData(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @RequestBody @Valid List<Meal> request) {
         if (!authHeader.equals("Bearer " + AppEnv.MEAL_AUTH_SECRET))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         mealRepository.saveAll(request);
