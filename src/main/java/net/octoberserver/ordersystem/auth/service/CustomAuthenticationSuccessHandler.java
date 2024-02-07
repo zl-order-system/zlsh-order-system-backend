@@ -28,7 +28,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         response.sendRedirect(
             UriComponentsBuilder
-                .fromUriString(AppEnv.FRONTEND_ROOT_URL)
+                .fromUriString(AppEnv.FRONTEND_ROOT_URL + "#/")
                 .queryParam("token", jwtService.generateToken((AppUser) authentication.getPrincipal()))
                 .build()
                 .toUriString()
