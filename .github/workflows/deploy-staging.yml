@@ -78,5 +78,5 @@ jobs:
             docker-compose stop
             docker-compose rm -f
             docker-compose pull --rm
-            docker-compose up -d --rm
+            docker-compose up -d
             exit

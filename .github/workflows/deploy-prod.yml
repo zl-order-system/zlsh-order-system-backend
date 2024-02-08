@@ -73,5 +73,5 @@ jobs:
             newgrp docker
             wget -O docker-compose.yml https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/deploy/docker-compose.yml
             docker-compose pull --rm
-            docker-compose up -d --rm
+            docker-compose up -d
             exit
