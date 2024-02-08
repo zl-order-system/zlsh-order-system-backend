@@ -10,9 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -73,7 +76,7 @@ public class OrderService {
             final Meal meal = mealOrder.get(0, Meal.class);
             final OrderData orderData = mealOrder.get(1, OrderData.class);
             final LocalDate date = meal.getDate();
-            final String displayDate = date.toString();
+            final String displayDate = date.format(DateTimeFormatter.ofPattern("M/d E", new Locale("zh", "TW")));
             final List<MealOption> mealOptions = meal.getOptions();
 
             if (orderData == null) {

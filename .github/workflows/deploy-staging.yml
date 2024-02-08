@@ -15,7 +15,7 @@ env:
   CONTAINER_NETWORK: nginx_proxied
   STAGING_DB_URL: jdbc:postgresql://order-system-database:5432/order_system_staging
   STAGING_FRONTEND_ROOT_URL: https://zl-order-system.github.io/staging/app
-  BACKEND_HOST: staging.order-system.octoberserver.net
+  BACKEND_HOST: https://staging.order-system.octoberserver.net
 
 jobs:
   publish:
