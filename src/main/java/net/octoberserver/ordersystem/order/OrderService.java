@@ -30,6 +30,9 @@ public class OrderService {
     }
 
     public CreateOrderDataResponseDAO createOrderData(CreateOrderDataRequestDAO request, long userID) {
+        final var order = orderRepository.findByDateAndUserID(request.date(), userID);
+        if (order.isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrderData for that day already exist");
         final var id = UUID.randomUUID();
         orderRepository.save(OrderData.builder()
             .ID(id)
@@ -43,9 +46,9 @@ public class OrderService {
         return new CreateOrderDataResponseDAO(id);
     }
 
-    public void updateOrderData(UpdateOrderDataRequestDAO request) {
+    public void updateOrderData(UpdateOrderDataRequestDAO request, long userID) {
         final var orderData = orderRepository
-            .findById(request.id())
+            .findByDateAndUserID(request.date(), userID)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "OrderData not found"));
 
         final var meal = mealRepository

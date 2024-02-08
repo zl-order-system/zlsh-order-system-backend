@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<OrderData, UUID> {
@@ -28,7 +29,7 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
     """)
     List<Tuple> findOrdersWithUsersByDate(@Param("date") LocalDate date);
 
-    OrderData findByDateAndUserID(LocalDate date, long userID);
+    Optional<OrderData> findByDateAndUserID(LocalDate date, long userID);
 
     @Query("""
         SELECT

@@ -27,7 +27,7 @@ public class PaymentsService {
     List<GetPaymentDataResponseDAO> getPaymentData(GetPaymentDataRequestDAO request) {
         final var options = mealRepository
             .findById(request.getDate())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"))
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find payment data for that date"))
             .getOptions()
             .stream().map(MealOption::getName)
             .toList();
@@ -47,7 +47,8 @@ public class PaymentsService {
     }
 
     void updatePaymentStatus(UpdatePaymentStatusRequestDAO request) {
-        final var orderData = orderRepository.findByDateAndUserID(request.getDate(), request.getUserID());
+        final var orderData = orderRepository.findByDateAndUserID(request.getDate(), request.getUserID())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "OrderData not found"));
         orderData.setPaid(request.isPaid());
         orderRepository.save(orderData);
     }

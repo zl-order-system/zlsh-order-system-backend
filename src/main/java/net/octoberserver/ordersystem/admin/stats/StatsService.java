@@ -24,7 +24,7 @@ public class StatsService {
     List<GetStatDataResponseDAO> getStatData(GetStatDataRequestDAO request) {
         final var options = mealRepository
             .findById(request.getDate())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find statistics data for that date"))
             .getOptions();
         return findStatData(request.getDate())
             .stream()

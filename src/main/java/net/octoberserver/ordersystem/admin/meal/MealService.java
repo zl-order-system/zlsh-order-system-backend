@@ -32,7 +32,7 @@ public class MealService {
         try {
             mealRepository.save(meal);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Options");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid options");
         }
     }
 }
