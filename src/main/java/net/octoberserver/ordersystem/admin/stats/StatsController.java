@@ -23,7 +23,7 @@ public class StatsController {
     }
 
     @GetMapping("/detailed")
-    GetStatDetailedDataResponseDAO getStatDetailedData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date, @RequestParam(name = "mealOption") short mealOption) {
+    GetStatDetailedDataResponseDAO getStatDetailedData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date, @RequestParam(name = "mealID") short mealOption) {
         return null;
     }
 }
