@@ -15,6 +15,7 @@ env:
   CONTAINER_NETWORK: nginx_proxied
   STAGING_DB_URL: jdbc:postgresql://order-system-database:5432/order_system_staging
   STAGING_FRONTEND_ROOT_URL: https://zl-order-system.github.io/staging/app
+  BACKEND_HOST: staging.order-system.octoberserver.net
 
 jobs:
   publish:
@@ -69,6 +70,7 @@ jobs:
             export MEAL_AUTH_SECRET=${{ secrets.STAGING_MEAL_AUTH_SECRET }}
             export LINE_CLIENT_ID=NULL
             export LINE_CLIENT_SECRET=NULL
+            export BACKEND_HOST=${{ env.BACKEND_HOST }}
 
             cd ${{ env.WORK_DIR }}
             newgrp docker

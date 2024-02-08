@@ -13,6 +13,7 @@ services:
       - MEAL_AUTH_SECRET=${MEAL_AUTH_SECRET}
       - LINE_CLIENT_ID=${LINE_CLIENT_ID}
       - LINE_CLIENT_SECRET=${LINE_CLIENT_SECRET}
+      - BACKEND_HOST=${BACKEND_HOST}
     networks:
       - nginx_proxied
       - order-system
