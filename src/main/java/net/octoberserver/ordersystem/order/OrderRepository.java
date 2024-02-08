@@ -31,9 +31,6 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
 
     Optional<OrderData> findByDateAndUserID(LocalDate date, long userID);
 
-    void deleteByDateAndUserID(LocalDate date, long userID);
-
-
     @Query("""
         SELECT
             o.mealOption AS mealOption,

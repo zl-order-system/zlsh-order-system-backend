@@ -64,7 +64,9 @@ public class OrderService {
     }
 
     public void deleteOrderData(DeleteOrderDataRequestDAO request, long userID) {
-        orderRepository.deleteByDateAndUserID(request.date(), userID);
+        final var orderData = orderRepository.findByDateAndUserID(request.date(), userID)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find order data"));
+        orderRepository.delete(orderData);
     }
 
     public GetOrderDataResponseDAO processOrderData(List<Tuple> mealOrders) {
