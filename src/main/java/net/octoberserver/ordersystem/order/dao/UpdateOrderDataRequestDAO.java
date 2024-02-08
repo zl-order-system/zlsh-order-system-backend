@@ -1,15 +1,12 @@
 package net.octoberserver.ordersystem.order.dao;
 
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 public record UpdateOrderDataRequestDAO(
-    @Future
+    @FutureOrPresent
     @NotNull
     LocalDate date,
     @NotBlank

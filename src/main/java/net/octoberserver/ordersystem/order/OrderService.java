@@ -63,9 +63,9 @@ public class OrderService {
         orderRepository.save(orderData);
     }
 
-    public void deleteOrderData(DeleteOrderDataRequestDAO request) {
+    public void deleteOrderData(DeleteOrderDataRequestDAO request, long userID) {
         try {
-            orderRepository.deleteById(request.id());
+            orderRepository.deleteByDateAndUserID(request.date(), userID);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

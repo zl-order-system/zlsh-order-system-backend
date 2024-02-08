@@ -1,6 +1,7 @@
 package net.octoberserver.ordersystem.admin.payments.dao;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UpdatePaymentStatusRequestDAO {
     private long userID;
-    @Future
+    @FutureOrPresent
     @NotNull
     private LocalDate date;
     private boolean paid;
