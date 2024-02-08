@@ -2,7 +2,6 @@ package net.octoberserver.ordersystem.admin.stats;
 
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
-import net.octoberserver.ordersystem.admin.stats.dao.GetStatDataRequestDAO;
 import net.octoberserver.ordersystem.admin.stats.dao.GetStatDataResponseDAO;
 import net.octoberserver.ordersystem.meal.MealRepository;
 import net.octoberserver.ordersystem.order.LunchBox;
@@ -21,12 +20,12 @@ public class StatsService {
     private final MealRepository mealRepository;
     private final OrderRepository orderRepository;
 
-    List<GetStatDataResponseDAO> getStatData(GetStatDataRequestDAO request) {
+    List<GetStatDataResponseDAO> getStatData(LocalDate date) {
         final var options = mealRepository
-            .findById(request.getDate())
+            .findById(date)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find statistics data for that date"))
             .getOptions();
-        return findStatData(request.getDate())
+        return findStatData(date)
             .stream()
             .map(tuple ->
                 GetStatDataResponseDAO

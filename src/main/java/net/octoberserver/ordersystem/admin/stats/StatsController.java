@@ -1,16 +1,13 @@
 package net.octoberserver.ordersystem.admin.stats;
 
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import net.octoberserver.ordersystem.admin.stats.dao.GetStatDataRequestDAO;
 import net.octoberserver.ordersystem.admin.stats.dao.GetStatDataResponseDAO;
-import net.octoberserver.ordersystem.admin.stats.dao.GetStatDetailedDataRequestDAO;
 import net.octoberserver.ordersystem.admin.stats.dao.GetStatDetailedDataResponseDAO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -21,12 +18,12 @@ public class StatsController {
     private final StatsService statsService;
 
     @GetMapping
-    List<GetStatDataResponseDAO> getStatData(@RequestBody @Valid GetStatDataRequestDAO request) {
-        return statsService.getStatData(request);
+    List<GetStatDataResponseDAO> getStatData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date) {
+        return statsService.getStatData(date);
     }
 
     @GetMapping("/detailed")
-    GetStatDetailedDataResponseDAO getStatDetailedData(@RequestBody @Valid GetStatDetailedDataRequestDAO request) {
+    GetStatDetailedDataResponseDAO getStatDetailedData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date, @RequestParam(name = "mealOption") short mealOption) {
         return null;
     }
 }

@@ -1,7 +1,6 @@
 package net.octoberserver.ordersystem.admin.payments;
 
 import lombok.RequiredArgsConstructor;
-import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataRequestDAO;
 import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataResponseDAO;
 import net.octoberserver.ordersystem.admin.payments.dao.UpdatePaymentStatusRequestDAO;
 import net.octoberserver.ordersystem.order.LunchBoxService;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -24,15 +24,15 @@ public class PaymentsService {
     private final MealRepository mealRepository;
     private final OrderRepository orderRepository;
 
-    List<GetPaymentDataResponseDAO> getPaymentData(GetPaymentDataRequestDAO request) {
+    List<GetPaymentDataResponseDAO> getPaymentData(LocalDate date) {
         final var options = mealRepository
-            .findById(request.getDate())
+            .findById(date)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find payment data for that date"))
             .getOptions()
             .stream().map(MealOption::getName)
             .toList();
 
-        return orderRepository.findOrdersWithUsersByDate(request.getDate()).stream().map(userOrder -> {
+        return orderRepository.findOrdersWithUsersByDate(date).stream().map(userOrder -> {
             final var user = userOrder.get(0, AppUser.class);
             final var order = userOrder.get(1, OrderData.class);
             return GetPaymentDataResponseDAO.builder()
