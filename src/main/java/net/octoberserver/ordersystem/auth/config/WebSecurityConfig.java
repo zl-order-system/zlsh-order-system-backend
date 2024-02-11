@@ -5,6 +5,7 @@ import net.octoberserver.ordersystem.auth.service.CustomAuthenticationSuccessHan
 import net.octoberserver.ordersystem.auth.service.CustomOAuth2UserService;
 import net.octoberserver.ordersystem.auth.service.CustomOidcUserService;
 import net.octoberserver.ordersystem.auth.filter.JWTAuthenticationFilter;
+import net.octoberserver.ordersystem.user.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,8 @@ public class WebSecurityConfig {
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             )
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin/meal/**").hasRole(Role.SUPER_ADMIN.name())
+                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             )
