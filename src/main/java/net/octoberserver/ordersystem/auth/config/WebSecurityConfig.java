@@ -38,9 +38,9 @@ public class WebSecurityConfig {
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             )
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/api/admin/meal/**").hasRole(Role.SUPER_ADMIN.name())
-                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/**").authenticated()
+//                .requestMatchers("/api/admin/meal/**").hasRole(Role.SUPER_ADMIN.name())
                 .anyRequest().permitAll()
             )
             .sessionManagement(sc -> sc

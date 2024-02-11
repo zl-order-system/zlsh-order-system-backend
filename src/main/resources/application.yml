@@ -27,8 +27,5 @@ spring:
 logging:
   level:
     org:
-      springframework:
-        security: debug
-        web: debug
-        http: debug
+      springframework: debug
       hibernate: debug
