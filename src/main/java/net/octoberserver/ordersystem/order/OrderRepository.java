@@ -41,4 +41,6 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
         GROUP BY o.mealOption
     """)
     List<Tuple> findStatData(@Param("date") LocalDate date, @Param("personal") LunchBox personal, @Param("school") LunchBox school);
+
+    Optional<OrderData> findByDate(LocalDate date);
 }

@@ -1,5 +1,6 @@
 package net.octoberserver.ordersystem.admin.meal.dao;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,5 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetMealDetailedResponseDAO {
+    private boolean mutable;
     private List<MealOption> options;
 }
