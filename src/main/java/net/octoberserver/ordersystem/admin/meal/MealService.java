@@ -3,6 +3,7 @@ package net.octoberserver.ordersystem.admin.meal;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.meal.dao.GetMealDetailedResponseDAO;
 import net.octoberserver.ordersystem.admin.meal.dao.UpdateMealDetailedRequestDAO;
+import net.octoberserver.ordersystem.meal.Meal;
 import net.octoberserver.ordersystem.meal.MealRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,8 @@ public class MealService {
     }
 
     void updateMealDetailed(UpdateMealDetailedRequestDAO request) {
-        final var meal = mealRepository
-            .findById(request.getDate())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meal not found"));
-        meal.setOptions(request.getOptions());
         try {
-            mealRepository.save(meal);
+            mealRepository.save(new Meal(request.getDate(), request.getOptions()));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid options");
         }

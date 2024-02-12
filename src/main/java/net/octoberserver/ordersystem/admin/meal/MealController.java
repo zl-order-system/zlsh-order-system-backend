@@ -21,7 +21,7 @@ public class MealController {
         return mealService.getMealDetailed(date);
     }
 
-    @PatchMapping("/detailed")
+    @PutMapping("/detailed")
     void updateMealDetailed(@RequestBody @Valid UpdateMealDetailedRequestDAO request) {
         mealService.updateMealDetailed(request);
     }
