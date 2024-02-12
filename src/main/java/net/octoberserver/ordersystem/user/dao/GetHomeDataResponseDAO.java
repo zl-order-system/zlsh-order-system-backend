@@ -25,7 +25,6 @@ public class GetHomeDataResponseDAO {
         private boolean ordered;
     }
 
-    private String role;
     private BannerData bannerData;
     private List<PreviewData> previewData;
 }

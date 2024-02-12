@@ -29,8 +29,8 @@ public class AppUser implements OidcUser, UserDetails {
     String email;
     short classNumber;
     short seatNumber;
-    @Enumerated(EnumType.STRING)
-    Role role;
+    @Convert(converter = UserRoleConverter.class)
+    List<Role> roles;
     @Column(length = 2048)
     String attributes;
 
@@ -49,7 +49,7 @@ public class AppUser implements OidcUser, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).toList();
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -39,7 +40,7 @@ public class CustomOidcUserService extends OidcUserService {
                 .name(name)
                 .googleName(googleName)
                 .email(email)
-                .role(Role.USER)
+                .roles(new ArrayList<>())
                 .classNumber(classNumber)
                 .seatNumber(seatNumber)
                 .attributes(oidcUser.getAttributes())

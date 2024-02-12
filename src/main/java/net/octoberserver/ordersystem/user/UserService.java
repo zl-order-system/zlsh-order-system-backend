@@ -24,15 +24,7 @@ public class UserService {
     private final OrderRepository orderRepository;
 
     GetHomeDataResponseDAO getHomeData(long userID) {
-        final var result = processHomeData(orderRepository.findUpcomingMealsWithOrders(userID), LocalDate.now());
-        result.setRole(
-            userRepository
-                .findById(userID)
-                .orElseThrow()
-                .getRole()
-                .name()
-        );
-        return result;
+        return processHomeData(orderRepository.findUpcomingMealsWithOrders(userID), LocalDate.now());
     }
 
     GetAccountDataResponseDAO getAccountData(long userID) {
@@ -46,6 +38,10 @@ public class UserService {
             .classNumber(user.getClassNumber())
             .seatNumber(user.getSeatNumber())
             .build();
+    }
+
+    List<String> getRoles(long userID) {
+        return userRepository.findById(userID).orElseThrow().getRoles().stream().map(Role::name).toList();
     }
 
     public GetHomeDataResponseDAO processHomeData(List<Tuple> mealOrders, LocalDate today) {
@@ -75,6 +71,6 @@ public class UserService {
                 return new GetHomeDataResponseDAO.PreviewData(orderData.getDate(), true);
             })
             .collect(Collectors.toList());
-        return new GetHomeDataResponseDAO("", headerData, bodyData);
+        return new GetHomeDataResponseDAO(headerData, bodyData);
     }
 }
