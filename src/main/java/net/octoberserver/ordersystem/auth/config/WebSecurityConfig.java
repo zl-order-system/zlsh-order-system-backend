@@ -5,7 +5,6 @@ import net.octoberserver.ordersystem.auth.service.CustomAuthenticationSuccessHan
 import net.octoberserver.ordersystem.auth.service.CustomOAuth2UserService;
 import net.octoberserver.ordersystem.auth.service.CustomOidcUserService;
 import net.octoberserver.ordersystem.auth.filter.JWTAuthenticationFilter;
-import net.octoberserver.ordersystem.user.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;

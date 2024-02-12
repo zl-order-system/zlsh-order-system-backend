@@ -5,7 +5,6 @@ import net.octoberserver.ordersystem.admin.meal.dao.GetMealDetailedResponseDAO;
 import net.octoberserver.ordersystem.admin.meal.dao.UpdateMealDetailedRequestDAO;
 import net.octoberserver.ordersystem.meal.Meal;
 import net.octoberserver.ordersystem.meal.MealRepository;
-import net.octoberserver.ordersystem.order.OrderData;
 import net.octoberserver.ordersystem.order.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

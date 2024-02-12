@@ -24,6 +24,6 @@ public class StatsController {
 
     @GetMapping("/detailed")
     GetStatDetailedDataResponseDAO getStatDetailedData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date, @RequestParam(name = "mealID") short mealOption) {
-        return null;
+        return statsService.getStatDetailedData(date, mealOption);
     }
 }

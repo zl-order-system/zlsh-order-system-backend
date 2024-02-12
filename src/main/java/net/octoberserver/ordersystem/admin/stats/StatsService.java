@@ -3,6 +3,7 @@ package net.octoberserver.ordersystem.admin.stats;
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.stats.dao.GetStatDataResponseDAO;
+import net.octoberserver.ordersystem.admin.stats.dao.GetStatDetailedDataResponseDAO;
 import net.octoberserver.ordersystem.meal.MealRepository;
 import net.octoberserver.ordersystem.order.LunchBox;
 import net.octoberserver.ordersystem.order.OrderRepository;
@@ -40,5 +41,20 @@ public class StatsService {
 
     List<Tuple> findStatData(LocalDate date) {
         return orderRepository.findStatData(date, LunchBox.SCHOOL, LunchBox.PERSONAL);
+    }
+
+    GetStatDetailedDataResponseDAO getStatDetailedData(LocalDate date, short mealOption) {
+        return new GetStatDetailedDataResponseDAO(
+            orderRepository.findStatDetailed(date, mealOption)
+                .stream()
+                .filter(tuple -> tuple.get(1, LunchBox.class).equals(LunchBox.PERSONAL))
+                .map(tuple -> tuple.get(0, Short.class))
+                .toList(),
+            orderRepository.findStatDetailed(date, mealOption)
+                .stream()
+                .filter(tuple -> tuple.get(1, LunchBox.class).equals(LunchBox.SCHOOL))
+                .map(tuple -> tuple.get(0, Short.class))
+                .toList()
+        );
     }
 }
