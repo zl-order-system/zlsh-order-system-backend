@@ -31,6 +31,7 @@ public class StatsService {
             .map(tuple ->
                 GetStatDataResponseDAO
                     .builder()
+                    .id(tuple.get(0, Short.class))
                     .name(options.get(tuple.get(0, Short.class)).getName())
                     .personalBoxCount(tuple.get(1, Long.class))
                     .schoolBoxCount(tuple.get(2, Long.class))
