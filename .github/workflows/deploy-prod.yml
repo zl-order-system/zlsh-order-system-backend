@@ -67,6 +67,7 @@ jobs:
             export DB_URL=${{ env.PROD_DB_URL }}
             export FRONTEND_ROOT_URL=${{ env.PROD_FRONTEND_ROOT_URL }}
             export JWT_KEY=${{ secrets.PROD_JWT_KEY }}
+            export MEAL_AUTH_SECRET=${{ secrets.PROD_MEAL_AUTH_SECRET }}
             export BACKEND_HOST=${{ env.BACKEND_HOST }}
 
             cd ${{ env.WORK_DIR }}
