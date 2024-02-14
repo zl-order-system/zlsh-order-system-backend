@@ -3,9 +3,6 @@ name: Publish to Production
 on:
   push:
     branches: [ prod ]
-  pull_request:
-      types: [ closed ]
-      branches: [ prod ]
 
 env:
   REGISTRY: ghcr.io
