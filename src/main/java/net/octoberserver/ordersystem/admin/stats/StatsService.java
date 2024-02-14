@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.stats.dao.GetStatDataResponseDAO;
 import net.octoberserver.ordersystem.admin.stats.dao.GetStatDetailedDataResponseDAO;
 import net.octoberserver.ordersystem.meal.MealRepository;
-import net.octoberserver.ordersystem.order.LunchBox;
+import net.octoberserver.ordersystem.order.lunchbox.LunchBox;
 import net.octoberserver.ordersystem.order.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

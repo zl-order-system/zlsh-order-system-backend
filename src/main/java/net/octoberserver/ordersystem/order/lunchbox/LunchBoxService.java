@@ -1,4 +1,4 @@
-package net.octoberserver.ordersystem.order;
+package net.octoberserver.ordersystem.order.lunchbox;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

@@ -32,6 +32,7 @@ public class GetOrderDataResponseDAO {
         private String price;
         private String selectedMeal;
         private List<MealOption> mealOptions;
+        private boolean locked;
     }
 
     private HeaderData headerData;

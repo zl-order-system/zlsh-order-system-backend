@@ -1,4 +1,4 @@
-package net.octoberserver.ordersystem.order;
+package net.octoberserver.ordersystem.order.lunchbox;
 
 public class LunchBoxType {
     private LunchBoxType() {}
