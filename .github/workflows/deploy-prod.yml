@@ -69,10 +69,14 @@ jobs:
             export JWT_KEY=${{ secrets.PROD_JWT_KEY }}
             export MEAL_AUTH_SECRET=${{ secrets.PROD_MEAL_AUTH_SECRET }}
             export BACKEND_HOST=${{ env.BACKEND_HOST }}
+            export LINE_CLIENT_ID=NULL
+            export LINE_CLIENT_SECRET=NULL
 
             cd ${{ env.WORK_DIR }}
             newgrp docker
             wget -O docker-compose.yml https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/deploy/docker-compose.yml
+            docker-compose stop
+            docker-compose rm -f
             docker-compose pull
             docker-compose up -d
             exit
