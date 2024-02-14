@@ -1,6 +1,7 @@
 package net.octoberserver.ordersystem.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import net.octoberserver.ordersystem.auth.LoginError;
 import net.octoberserver.ordersystem.user.AppUser;
 import net.octoberserver.ordersystem.user.AppUserRepository;
 import net.octoberserver.ordersystem.user.Role;
@@ -16,7 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomOidcUserService extends OidcUserService {
 
-    private final AppUserRepository userRepository;
+    private final OAuthCommonUserService commonUserService;
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) {
@@ -25,39 +26,12 @@ public class CustomOidcUserService extends OidcUserService {
         String email = oidcUser.getEmail();
         String googleName = oidcUser.getAttribute("name");
 
-        long userID = Long.parseLong(email.substring(1, email.indexOf('@'))); // 學號
-        String name = googleName.substring(5);
-        short classNumber = Short.parseShort(googleName.substring(0, 3));
-        short seatNumber = Short.parseShort(googleName.substring(3, 5));
-
-        AppUser user;
-        Optional<AppUser> userOptional = userRepository.findById(userID);
-
-        if (userOptional.isEmpty()) {
-            user = AppUser
-                .builder()
-                .ID(userID)
-                .name(name)
-                .googleName(googleName)
-                .email(email)
-                .roles(new ArrayList<>())
-                .classNumber(classNumber)
-                .seatNumber(seatNumber)
-                .attributes(oidcUser.getAttributes())
-                .build();
-            userRepository.save(user);
-        } else {
-            user = userOptional.get();
-            if (!user.getGoogleName().equals(googleName)) {
-                user.setGoogleName(googleName);
-                user.setName(name);
-                user.setClassNumber(classNumber);
-                user.setSeatNumber(seatNumber);
-                userRepository.save(user);
-            }
+        commonUserService.checkUserInfo(googleName, email);
+        try {
+            return commonUserService.createAppUser(googleName, email, oidcUser.getAttributes());
+        } catch (Exception e) {
+            throw new LoginErrorException(LoginError.ACCOUNT_FORMAT_ERROR.name(), LoginError.ACCOUNT_FORMAT_ERROR);
         }
-
-        return user;
     }
 }
 

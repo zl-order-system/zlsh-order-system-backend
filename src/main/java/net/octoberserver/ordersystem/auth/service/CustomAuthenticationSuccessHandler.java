@@ -8,12 +8,13 @@ import net.octoberserver.ordersystem.user.AppUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JWTService jwtService;
@@ -33,6 +34,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 //                .build()
 //                .toUriString()
 //        );
-        response.sendRedirect(AppEnv.FRONTEND_ROOT_URL + "/#/?token=" + jwtService.generateToken((AppUser) authentication.getPrincipal()));
+        final var user = (AppUser) authentication.getPrincipal();
+        response.sendRedirect(AppEnv.FRONTEND_ROOT_URL + "/#/?token=" + URLEncoder.encode(jwtService.generateToken(user), StandardCharsets.UTF_8));
     }
 }

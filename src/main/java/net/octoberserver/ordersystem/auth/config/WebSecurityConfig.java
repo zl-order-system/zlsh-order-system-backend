@@ -1,6 +1,7 @@
 package net.octoberserver.ordersystem.auth.config;
 
 import lombok.RequiredArgsConstructor;
+import net.octoberserver.ordersystem.auth.service.CustomAuthenticationFailureHandler;
 import net.octoberserver.ordersystem.auth.service.CustomAuthenticationSuccessHandler;
 import net.octoberserver.ordersystem.auth.service.CustomOAuth2UserService;
 import net.octoberserver.ordersystem.auth.service.CustomOidcUserService;
@@ -29,6 +30,7 @@ public class WebSecurityConfig {
     private final CustomOidcUserService oidcLoginHandler;
     private final CustomOAuth2UserService oauth2LoginHandler;
     private final CustomAuthenticationSuccessHandler successHandler;
+    private final CustomAuthenticationFailureHandler failureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -55,6 +57,7 @@ public class WebSecurityConfig {
                     .userService(oauth2LoginHandler)
                 )
                 .successHandler(successHandler)
+                .failureHandler(failureHandler)
             )
             .authenticationProvider(authProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
