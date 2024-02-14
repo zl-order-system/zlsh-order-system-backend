@@ -6,6 +6,7 @@ import net.octoberserver.ordersystem.meal.Meal;
 import net.octoberserver.ordersystem.meal.MealOption;
 import net.octoberserver.ordersystem.meal.MealRepository;
 import net.octoberserver.ordersystem.order.dao.*;
+import net.octoberserver.ordersystem.order.lunchbox.LunchBoxService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,9 +30,18 @@ public class OrderService {
     }
 
     public CreateOrderDataResponseDAO createOrderData(CreateOrderDataRequestDAO request, long userID) {
+        mealRepository.findById(request.date()).ifPresent(meal -> {
+            if (meal.isLocked())
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
+
+            if (request.selectedMeal() > meal.getOptions().size() - 1)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid meal option: " + request.selectedMeal());
+        });
+
         final var order = orderRepository.findByDateAndUserID(request.date(), userID);
         if (order.isPresent())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrderData for that day already exist");
+
         final var id = UUID.randomUUID();
         orderRepository.save(OrderData.builder()
             .ID(id)
@@ -54,6 +64,9 @@ public class OrderService {
             .findById(orderData.getDate())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meal not found"));
 
+        if (meal.isLocked())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
+
         if (request.selectedMeal() >= meal.getOptions().size())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Option not available");
 
@@ -63,6 +76,10 @@ public class OrderService {
     }
 
     public void deleteOrderData(DeleteOrderDataRequestDAO request, long userID) {
+        mealRepository.findById(request.date()).ifPresent(meal -> {
+            if (meal.isLocked())
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
+        });
         final var orderData = orderRepository.findByDateAndUserID(request.date(), userID)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find order data"));
         orderRepository.delete(orderData);
@@ -75,6 +92,10 @@ public class OrderService {
         mealOrders.forEach(mealOrder -> {
             final Meal meal = mealOrder.get(0, Meal.class);
             final OrderData orderData = mealOrder.get(1, OrderData.class);
+
+            // Remove later
+            if (meal.isLocked()) return;
+
             final LocalDate date = meal.getDate();
             final String displayDate = date.format(DateTimeFormatter.ofPattern("M/d E", new Locale("zh", "TW")));
             final List<MealOption> mealOptions = meal.getOptions();
@@ -90,6 +111,7 @@ public class OrderService {
                     .price("-")
                     .lunchBox("-")
                     .selectedMeal("-")
+                    .locked(meal.isLocked())
                     .build()
                 );
                 headerData.setDaysUnordered(headerData.getDaysUnordered() + 1);
@@ -117,6 +139,7 @@ public class OrderService {
                 .price(Integer.toString(price))
                 .lunchBox(lunchBoxService.getLunchBoxString(orderData.getLunchBox()))
                 .selectedMeal(meal.getOptions().get(orderData.getMealOption()).getName())
+                .locked(meal.isLocked())
                 .build()
             );
         });

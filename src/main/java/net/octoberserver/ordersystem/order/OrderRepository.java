@@ -1,6 +1,7 @@
 package net.octoberserver.ordersystem.order;
 
 import jakarta.persistence.Tuple;
+import net.octoberserver.ordersystem.order.lunchbox.LunchBox;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

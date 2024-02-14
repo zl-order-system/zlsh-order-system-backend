@@ -3,12 +3,11 @@ package net.octoberserver.ordersystem.user;
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.meal.Meal;
-import net.octoberserver.ordersystem.order.LunchBoxService;
+import net.octoberserver.ordersystem.order.lunchbox.LunchBoxService;
 import net.octoberserver.ordersystem.order.OrderData;
 import net.octoberserver.ordersystem.order.OrderRepository;
 import net.octoberserver.ordersystem.user.dao.GetAccountDataResponseDAO;
 import net.octoberserver.ordersystem.user.dao.GetHomeDataResponseDAO;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

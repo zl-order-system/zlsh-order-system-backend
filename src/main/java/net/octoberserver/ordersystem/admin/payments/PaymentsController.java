@@ -19,7 +19,7 @@ public class PaymentsController {
     private final PaymentsService paymentsService;
 
     @GetMapping
-    List<GetPaymentDataResponseDAO> getPaymentData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date) {
+    GetPaymentDataResponseDAO getPaymentData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date) {
         return paymentsService.getPaymentData(date);
     }
 
