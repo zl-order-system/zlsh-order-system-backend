@@ -36,6 +36,7 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
             SUM(CASE WHEN o.lunchBox = :school THEN 1 ELSE 0 END) AS scholBoxCount
         FROM OrderData o
         WHERE o.date = :date
+        AND o.paid = true
         GROUP BY o.mealOption
     """)
     List<Tuple> findStatData(@Param("date") LocalDate date, @Param("personal") LunchBox personal, @Param("school") LunchBox school);
