@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,19 +29,25 @@ public class OrderService {
     }
 
     public CreateOrderDataResponseDAO createOrderData(CreateOrderDataRequestDAO request, long userID) {
-        return new CreateOrderDataResponseDAO(orderRepository.save(OrderData.builder()
+        final var order = orderRepository.findByDateAndUserID(request.date(), userID);
+        if (order.isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrderData for that day already exist");
+        final var id = UUID.randomUUID();
+        orderRepository.save(OrderData.builder()
+            .ID(id)
             .date(request.date())
             .lunchBox(lunchBoxService.getLunchBoxEnum(request.lunchBoxType()))
             .userID(userID)
             .mealOption(request.selectedMeal())
             .paid(false)
             .build()
-        ).getID());
+        );
+        return new CreateOrderDataResponseDAO(id);
     }
 
-    public void updateOrderData(UpdateOrderDataRequestDAO request) {
+    public void updateOrderData(UpdateOrderDataRequestDAO request, long userID) {
         final var orderData = orderRepository
-            .findById(request.id())
+            .findByDateAndUserID(request.date(), userID)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "OrderData not found"));
 
         final var meal = mealRepository
@@ -53,12 +62,10 @@ public class OrderService {
         orderRepository.save(orderData);
     }
 
-    public void deleteOrderData(DeleteOrderDataRequestDAO request) {
-        try {
-            orderRepository.deleteById(request.id());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+    public void deleteOrderData(DeleteOrderDataRequestDAO request, long userID) {
+        final var orderData = orderRepository.findByDateAndUserID(request.date(), userID)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find order data"));
+        orderRepository.delete(orderData);
     }
 
     public GetOrderDataResponseDAO processOrderData(List<Tuple> mealOrders) {
@@ -69,7 +76,7 @@ public class OrderService {
             final Meal meal = mealOrder.get(0, Meal.class);
             final OrderData orderData = mealOrder.get(1, OrderData.class);
             final LocalDate date = meal.getDate();
-            final String displayDate = date.toString();
+            final String displayDate = date.format(DateTimeFormatter.ofPattern("M/d E", new Locale("zh", "TW")));
             final List<MealOption> mealOptions = meal.getOptions();
 
             if (orderData == null) {
@@ -109,7 +116,7 @@ public class OrderService {
                 .state(orderState)
                 .price(Integer.toString(price))
                 .lunchBox(lunchBoxService.getLunchBoxString(orderData.getLunchBox()))
-                .selectedMeal(Short.toString(orderData.getMealOption()))
+                .selectedMeal(meal.getOptions().get(orderData.getMealOption()).getName())
                 .build()
             );
         });

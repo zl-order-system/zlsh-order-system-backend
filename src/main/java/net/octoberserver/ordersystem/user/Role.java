@@ -1,6 +1,9 @@
 package net.octoberserver.ordersystem.user;
 
 public enum Role {
-    USER,
-    ADMIN
+    ADMIN,
+    STATS_ADMIN,
+    PAYMENTS_ADMIN,
+    MEAL_ADMIN,
+    MESSAGES_ADMIN
 }

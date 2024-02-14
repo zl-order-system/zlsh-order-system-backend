@@ -14,6 +14,8 @@ env:
   CONTAINER_NAME: order-system-backend-staging
   CONTAINER_NETWORK: nginx_proxied
   STAGING_DB_URL: jdbc:postgresql://order-system-database:5432/order_system_staging
+  STAGING_FRONTEND_ROOT_URL: https://zl-order-system.github.io/staging/app
+  BACKEND_HOST: https://staging.order-system.octoberserver.net
 
 jobs:
   publish:
@@ -63,9 +65,18 @@ jobs:
             export DB_USERNAME=${{ secrets.STAGING_DB_USERNAME }}
             export DB_PASSWORD=${{ secrets.STAGING_DB_PASSWORD }}
             export DB_URL=${{ env.STAGING_DB_URL }}
+            export FRONTEND_ROOT_URL=${{ env.STAGING_FRONTEND_ROOT_URL }}
+            export JWT_KEY=${{ secrets.STAGING_JWT_KEY }}
+            export MEAL_AUTH_SECRET=${{ secrets.STAGING_MEAL_AUTH_SECRET }}
+            export LINE_CLIENT_ID=NULL
+            export LINE_CLIENT_SECRET=NULL
+            export BACKEND_HOST=${{ env.BACKEND_HOST }}
+
             cd ${{ env.WORK_DIR }}
             newgrp docker
-            wget https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/deploy/docker-compose.yml
-            docker compose pull
-            docker compose up -d
+            wget -O docker-compose.yml https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/deploy/docker-compose.yml
+            docker-compose stop
+            docker-compose rm -f
+            docker-compose pull
+            docker-compose up -d
             exit

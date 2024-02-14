@@ -1,14 +1,17 @@
 package net.octoberserver.ordersystem.auth.config;
 
 import lombok.RequiredArgsConstructor;
+import net.octoberserver.ordersystem.auth.service.CustomAuthenticationFailureHandler;
 import net.octoberserver.ordersystem.auth.service.CustomAuthenticationSuccessHandler;
 import net.octoberserver.ordersystem.auth.service.CustomOAuth2UserService;
 import net.octoberserver.ordersystem.auth.service.CustomOidcUserService;
 import net.octoberserver.ordersystem.auth.filter.JWTAuthenticationFilter;
+import net.octoberserver.ordersystem.user.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,6 +30,7 @@ public class WebSecurityConfig {
     private final CustomOidcUserService oidcLoginHandler;
     private final CustomOAuth2UserService oauth2LoginHandler;
     private final CustomAuthenticationSuccessHandler successHandler;
+    private final CustomAuthenticationFailureHandler failureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,9 +40,12 @@ public class WebSecurityConfig {
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             )
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/admin/stats/**").hasRole(Role.STATS_ADMIN.name())
+                .requestMatchers("/api/admin/payments/**").hasRole(Role.PAYMENTS_ADMIN.name())
+                .requestMatchers("/api/admin/meal/**").hasRole(Role.MEAL_ADMIN.name())
+                .requestMatchers("/api/admin/messages/**").hasRole(Role.MESSAGES_ADMIN.name())
+                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
                 .requestMatchers("/api/**").authenticated()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
             )
             .sessionManagement(sc -> sc
@@ -50,9 +57,11 @@ public class WebSecurityConfig {
                     .userService(oauth2LoginHandler)
                 )
                 .successHandler(successHandler)
+                .failureHandler(failureHandler)
             )
             .authenticationProvider(authProvider)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .cors(Customizer.withDefaults());
         return http.build();
     }
 }

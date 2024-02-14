@@ -11,5 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetMealDetailedResponseDAO {
+    private boolean mutable;
     private List<MealOption> options;
 }

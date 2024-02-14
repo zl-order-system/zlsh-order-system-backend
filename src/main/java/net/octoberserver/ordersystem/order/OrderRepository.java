@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<OrderData, UUID> {
@@ -28,8 +29,6 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
     """)
     List<Tuple> findOrdersWithUsersByDate(@Param("date") LocalDate date);
 
-    OrderData findByDateAndUserID(LocalDate date, long userID);
-
     @Query("""
         SELECT
             o.mealOption AS mealOption,
@@ -40,4 +39,18 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
         GROUP BY o.mealOption
     """)
     List<Tuple> findStatData(@Param("date") LocalDate date, @Param("personal") LunchBox personal, @Param("school") LunchBox school);
+
+    @Query("""
+        SELECT u.seatNumber, o.lunchBox
+        FROM OrderData o
+        INNER JOIN AppUser u
+        ON u.ID = o.userID
+        WHERE o.date = :date
+        AND o.mealOption = :mealOption
+    """)
+    List<Tuple> findStatDetailed(@Param("date") LocalDate date, @Param("mealOption") short mealOption);
+
+    Optional<OrderData> findByDateAndUserID(LocalDate date, long userID);
+
+    Optional<OrderData> findByDate(LocalDate date);
 }

@@ -2,9 +2,9 @@ package net.octoberserver.ordersystem.order.dao;
 
 import jakarta.validation.constraints.NotNull;
 
-import java.util.UUID;
+import java.time.LocalDate;
 
 public record DeleteOrderDataRequestDAO(
     @NotNull
-    UUID id
+    LocalDate date
 ) {}

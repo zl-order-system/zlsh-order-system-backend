@@ -3,18 +3,19 @@ package net.octoberserver.ordersystem.auth.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import net.octoberserver.ordersystem.AppEnv;
 import net.octoberserver.ordersystem.user.AppUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private static final String REDIRECT_URI = "/";
 
     private final JWTService jwtService;
 
@@ -26,8 +27,14 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        final String token = jwtService.generateToken((AppUser) authentication.getPrincipal());
-        final String targetUrl = UriComponentsBuilder.fromUriString(REDIRECT_URI).queryParam("token", token).build().toUriString();
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+//        response.sendRedirect(
+//            UriComponentsBuilder
+//                .fromUriString(AppEnv.FRONTEND_ROOT_URL)
+//                .queryParam("token", jwtService.generateToken((AppUser) authentication.getPrincipal()))
+//                .build()
+//                .toUriString()
+//        );
+        final var user = (AppUser) authentication.getPrincipal();
+        response.sendRedirect(AppEnv.FRONTEND_ROOT_URL + "/#/?token=" + URLEncoder.encode(jwtService.generateToken(user), StandardCharsets.UTF_8));
     }
 }

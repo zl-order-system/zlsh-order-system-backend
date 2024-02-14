@@ -8,6 +8,12 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_URL=${DB_URL}
+      - FRONTEND_ROOT_URL=${FRONTEND_ROOT_URL}
+      - JWT_KEY=${JWT_KEY}
+      - MEAL_AUTH_SECRET=${MEAL_AUTH_SECRET}
+      - LINE_CLIENT_ID=${LINE_CLIENT_ID}
+      - LINE_CLIENT_SECRET=${LINE_CLIENT_SECRET}
+      - BACKEND_HOST=${BACKEND_HOST}
     networks:
       - nginx_proxied
       - order-system

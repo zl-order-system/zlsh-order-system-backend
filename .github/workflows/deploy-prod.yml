@@ -14,6 +14,8 @@ env:
   CONTAINER_NAME: order-system-backend-prod
   CONTAINER_NETWORK: nginx_proxied
   PROD_DB_URL: jdbc:postgresql://order-system-database:5432/order_system_prod
+  PROD_FRONTEND_ROOT_URL: https://zl-order-system.github.io/app
+  BACKEND_HOST: https://staging.order-system.octoberserver.net
 
 jobs:
   publish:
@@ -63,9 +65,13 @@ jobs:
             export DB_USERNAME=${{ secrets.PROD_DB_USERNAME }}
             export DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}
             export DB_URL=${{ env.PROD_DB_URL }}
+            export FRONTEND_ROOT_URL=${{ env.PROD_FRONTEND_ROOT_URL }}
+            export JWT_KEY=${{ secrets.PROD_JWT_KEY }}
+            export BACKEND_HOST=${{ env.BACKEND_HOST }}
+
             cd ${{ env.WORK_DIR }}
             newgrp docker
-            wget https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/deploy/docker-compose.yml
-            docker compose pull
-            docker compose up -d
+            wget -O docker-compose.yml https://raw.githubusercontent.com/zl-order-system/zlsh-order-system-backend/main/deploy/docker-compose.yml
+            docker-compose pull
+            docker-compose up -d
             exit

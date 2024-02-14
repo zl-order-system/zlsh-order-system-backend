@@ -3,6 +3,8 @@ package net.octoberserver.ordersystem.auth.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
+import net.octoberserver.ordersystem.AppEnv;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +16,11 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JWTService {
 
-    private static final String SIGNING_KEY = "e943eac6985459fc302d77532fd558a347f20c8a70e11ccad053a7a697ebb2d5";
-
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SIGNING_KEY.getBytes());
+        return Keys.hmacShaKeyFor(AppEnv.JWT_KEY.getBytes());
     }
 
     public String generateToken(UserDetails user) {

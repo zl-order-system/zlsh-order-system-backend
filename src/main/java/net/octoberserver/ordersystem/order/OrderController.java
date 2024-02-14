@@ -25,11 +25,11 @@ public class OrderController {
 
     @PatchMapping
     void updateOrderData(@RequestBody @Valid UpdateOrderDataRequestDAO request) {
-        orderService.updateOrderData(request);
+        orderService.updateOrderData(request, Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
     @DeleteMapping
     void deleteOrderData(@RequestBody @Valid DeleteOrderDataRequestDAO request) {
-        orderService.deleteOrderData(request);
+        orderService.deleteOrderData(request, Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 }

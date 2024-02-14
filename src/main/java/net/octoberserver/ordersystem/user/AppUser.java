@@ -4,14 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,8 +29,8 @@ public class AppUser implements OidcUser, UserDetails {
     String email;
     short classNumber;
     short seatNumber;
-    @Enumerated(EnumType.STRING)
-    Role role;
+    @Convert(converter = UserRoleConverter.class)
+    List<Role> roles;
     @Column(length = 2048)
     String attributes;
 
@@ -51,7 +49,7 @@ public class AppUser implements OidcUser, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.name())).toList();
     }
 
     @Override

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -23,5 +25,10 @@ public class UserController {
     @GetMapping("/account")
     GetAccountDataResponseDAO getAccountData() {
         return userService.getAccountData(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+    }
+
+    @GetMapping("/roles")
+    List<String> getRoles() {
+        return userService.getRoles(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 }

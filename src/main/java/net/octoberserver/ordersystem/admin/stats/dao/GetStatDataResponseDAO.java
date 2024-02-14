@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetStatDataResponseDAO {
+    private short id;
     private String name;
     private long personalBoxCount;
     private long schoolBoxCount;
