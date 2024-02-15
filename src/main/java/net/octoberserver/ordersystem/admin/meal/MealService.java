@@ -22,7 +22,7 @@ public class MealService {
     private final OrderRepository orderRepository;
 
     GetMealDetailedResponseDAO getMealDetailed(LocalDate date) {
-        final var mutable = orderRepository.findByDate(date).isEmpty();
+        final var mutable = orderRepository.findFirstByDate(date).isEmpty();
         final var options = mealRepository
             .findById(date)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find data for that date"))
@@ -32,7 +32,7 @@ public class MealService {
     }
 
     void updateMealDetailed(UpdateMealDetailedRequestDAO request) {
-        if (orderRepository.findByDate(request.getDate()).isPresent())
+        if (orderRepository.findFirstByDate(request.getDate()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Date has been ordered");
 
         if (request.getOptions().isEmpty()) {

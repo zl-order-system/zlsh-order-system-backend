@@ -54,5 +54,5 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
 
     Optional<OrderData> findByDateAndUserID(LocalDate date, long userID);
 
-    Optional<OrderData> findByDate(LocalDate date);
+    Optional<OrderData> findFirstByDate(LocalDate date);
 }
