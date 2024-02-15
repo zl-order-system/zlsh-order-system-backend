@@ -67,6 +67,9 @@ public class OrderService {
         if (meal.isLocked())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
 
+        if (orderData.isPaid())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot edit OrderData that has been paid already");
+
         if (request.selectedMeal() >= meal.getOptions().size())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Option not available");
 
@@ -80,8 +83,13 @@ public class OrderService {
             if (meal.isLocked())
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
         });
+
         final var orderData = orderRepository.findByDateAndUserID(request.date(), userID)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find order data"));
+
+        if (orderData.isPaid())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete OrderData that has been paid already");
+
         orderRepository.delete(orderData);
     }
 
