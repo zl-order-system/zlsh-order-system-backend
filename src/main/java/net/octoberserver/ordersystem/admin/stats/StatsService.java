@@ -33,15 +33,15 @@ public class StatsService {
                     .builder()
                     .id(tuple.get(0, Short.class))
                     .name(options.get(tuple.get(0, Short.class)).getName())
-                    .schoolBoxCount(tuple.get(1, Long.class))
-                    .personalBoxCount(tuple.get(2, Long.class))
+                    .personalBoxCount(tuple.get(1, Long.class))
+                    .schoolBoxCount(tuple.get(2, Long.class))
                     .build()
             )
             .toList();
     }
 
     List<Tuple> findStatData(LocalDate date) {
-        return orderRepository.findStatData(date, LunchBox.SCHOOL, LunchBox.PERSONAL);
+        return orderRepository.findStatData(date, LunchBox.PERSONAL, LunchBox.SCHOOL);
     }
 
     GetStatDetailedDataResponseDAO getStatDetailedData(LocalDate date, short mealOption) {
