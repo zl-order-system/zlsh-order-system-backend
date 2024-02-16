@@ -33,8 +33,8 @@ public class StatsService {
                     .builder()
                     .id(tuple.get(0, Short.class))
                     .name(options.get(tuple.get(0, Short.class)).getName())
-                    .personalBoxCount(tuple.get(1, Long.class))
-                    .schoolBoxCount(tuple.get(2, Long.class))
+                    .schoolBoxCount(tuple.get(1, Long.class))
+                    .personalBoxCount(tuple.get(2, Long.class))
                     .build()
             )
             .toList();
@@ -45,17 +45,19 @@ public class StatsService {
     }
 
     GetStatDetailedDataResponseDAO getStatDetailedData(LocalDate date, short mealOption) {
-        return new GetStatDetailedDataResponseDAO(
-            orderRepository.findStatDetailed(date, mealOption)
+        final var result = orderRepository.findStatDetailed(date, mealOption);
+        return GetStatDetailedDataResponseDAO.builder()
+            .personalLunchBox(result
                 .stream()
                 .filter(tuple -> tuple.get(1, LunchBox.class).equals(LunchBox.PERSONAL))
                 .map(tuple -> tuple.get(0, Short.class))
-                .toList(),
-            orderRepository.findStatDetailed(date, mealOption)
+                .toList()
+            ).schoolLunchBox(result
                 .stream()
                 .filter(tuple -> tuple.get(1, LunchBox.class).equals(LunchBox.SCHOOL))
                 .map(tuple -> tuple.get(0, Short.class))
                 .toList()
-        );
+            ).build();
+
     }
 }
