@@ -48,6 +48,7 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
         INNER JOIN AppUser u
         ON u.ID = o.userID
         WHERE o.date = :date
+        AND o.paid = true
         AND o.mealOption = :mealOption
     """)
     List<Tuple> findStatDetailed(@Param("date") LocalDate date, @Param("mealOption") short mealOption);
