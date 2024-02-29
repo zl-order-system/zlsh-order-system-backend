@@ -1,13 +1,12 @@
 package net.octoberserver.ordersystem.meal;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import net.octoberserver.ordersystem.AppEnv;
+import net.octoberserver.ordersystem.AppEnvService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +22,7 @@ import java.util.List;
 public class SystemMealController {
 
     final MealRepository mealRepository;
+    final AppEnvService appEnv;
 
     @Data
     @NoArgsConstructor
@@ -37,7 +37,7 @@ public class SystemMealController {
 
     @PutMapping
     ResponseEntity<Object> createMealData(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @RequestBody @Valid List<MealDAO> request) {
-        if (!authHeader.equals("Bearer " + AppEnv.MEAL_AUTH_SECRET))
+        if (!authHeader.equals("Bearer " + appEnv.MEAL_AUTH_SECRET))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         mealRepository.saveAll(request.stream().map(dao -> new Meal(dao.getDate(), dao.getMealOptions(), false)).toList());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
