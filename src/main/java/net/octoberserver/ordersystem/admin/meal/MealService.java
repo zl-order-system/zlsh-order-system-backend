@@ -6,7 +6,6 @@ import net.octoberserver.ordersystem.admin.meal.dao.UpdateMealDetailedRequestDAO
 import net.octoberserver.ordersystem.meal.Meal;
 import net.octoberserver.ordersystem.meal.MealRepository;
 import net.octoberserver.ordersystem.order.OrderRepository;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,16 +31,16 @@ public class MealService {
     }
 
     void updateMealDetailed(UpdateMealDetailedRequestDAO request) {
-        if (orderRepository.findFirstByDate(request.getDate()).isPresent())
+        if (orderRepository.findFirstByDate(request.date()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Date has been ordered");
 
-        if (request.getOptions().isEmpty()) {
-            mealRepository.deleteById(request.getDate());
+        if (request.options().isEmpty()) {
+            mealRepository.deleteById(request.date());
             return;
         }
 
         try {
-            mealRepository.save(new Meal(request.getDate(), request.getOptions(), mealRepository.findById(request.getDate()).map(Meal::isLocked).or(() -> Optional.of(false)).get()));
+            mealRepository.save(new Meal(request.date(), request.options(), mealRepository.findById(request.date()).map(Meal::isLocked).or(() -> Optional.of(false)).get()));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid options");
         }
