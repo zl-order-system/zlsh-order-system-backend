@@ -32,7 +32,7 @@ public class UserService {
             .avatarUrl("")
             .name(user.getName())
             .id(userID)
-            .googleName(user.googleName)
+            .googleName(user.getGoogleName())
             .email(user.getEmail())
             .classNumber(user.getClassNumber())
             .seatNumber(user.getSeatNumber())

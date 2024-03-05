@@ -28,6 +28,7 @@ public class StatsController {
     }
 
     @GetMapping("/detailed")
+    // TODO: Change mealID to mealOption
     GetStatDetailedDataResponseDAO getStatDetailedData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date, @RequestParam(name = "mealID") short mealOption) {
         final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
         final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();

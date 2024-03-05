@@ -3,6 +3,8 @@ package net.octoberserver.ordersystem.admin.payments;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataResponseDAO;
 import net.octoberserver.ordersystem.admin.payments.dao.UpdatePaymentStatusRequestDAO;
+import net.octoberserver.ordersystem.meal.MealClassLock;
+import net.octoberserver.ordersystem.meal.MealClassLockRepository;
 import net.octoberserver.ordersystem.order.lunchbox.LunchBoxService;
 import net.octoberserver.ordersystem.meal.MealOption;
 import net.octoberserver.ordersystem.meal.MealRepository;
@@ -24,6 +26,7 @@ public class PaymentsService {
     private final MealRepository mealRepository;
     private final OrderRepository orderRepository;
     private final AppUserRepository userRepository;
+    private final MealClassLockRepository classLockRepository;
 
     GetPaymentDataResponseDAO getPaymentData(LocalDate date, short classNumber) {
         final var meal = mealRepository
@@ -35,8 +38,10 @@ public class PaymentsService {
             .stream().map(MealOption::getName)
             .toList();
 
+        final var locked = classLockRepository.findById(MealClassLock.generateID(date, classNumber)).isPresent();
+
         return GetPaymentDataResponseDAO.builder()
-            .locked(meal.isLocked())
+            .locked(locked)
             .data(orderRepository.findOrdersWithUsersByDate(date, classNumber).stream().map(userOrder -> {
                 final var user = userOrder.get(0, AppUser.class);
                 final var order = userOrder.get(1, OrderData.class);
@@ -53,10 +58,9 @@ public class PaymentsService {
     }
 
     void updatePaymentStatus(UpdatePaymentStatusRequestDAO request, short classNumber) {
-        mealRepository.findById(request.date()).ifPresent(meal -> {
-            if (meal.isLocked())
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
-        });
+        final var locked = classLockRepository.findById(MealClassLock.generateID(request.date(), classNumber)).isPresent();
+        if (locked)
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
 
         final var orderData = orderRepository.findByDateAndUserID(request.date(), request.userID())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "OrderData not found"));

@@ -23,16 +23,16 @@ import java.util.Map;
 @Builder
 public class AppUser implements OidcUser, UserDetails {
     @Id
-    long ID; // 學號
-    String name;
-    String googleName;
-    String email;
-    short classNumber;
-    short seatNumber;
+    private long ID; // 學號
+    private String name;
+    private String googleName;
+    private String email;
+    private short classNumber;
+    private short seatNumber;
     @Convert(converter = UserRoleConverter.class)
-    List<Role> roles;
+    private List<Role> roles;
     @Column(length = 2048)
-    String attributes;
+    private String attributes;
 
     @Override
     public Map<String, Object> getAttributes() {
