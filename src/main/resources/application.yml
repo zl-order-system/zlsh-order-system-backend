@@ -30,4 +30,4 @@ logging:
       springframework: debug
       hibernate: debug
   file:
-    path: /var/logs/order-system.log
+    path: /var/logs/order-system
