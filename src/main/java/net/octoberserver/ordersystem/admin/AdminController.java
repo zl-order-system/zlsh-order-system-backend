@@ -65,7 +65,7 @@ public class AdminController {
             .build();
         logger.info(lock.toString());
         if (request.isLocked()) {
-            classLockRepository.saveAndFlush(lock);
+            classLockRepository.save(lock);
             return;
         }
         classLockRepository.deleteById(id);
