@@ -6,10 +6,8 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
 @Builder
-@AllArgsConstructor
-public class GetStatDetailedDataResponseDAO {
-    private List<Short> personalLunchBox;
-    private List<Short> schoolLunchBox;
-}
+public record GetStatDetailedDataResponseDAO(
+    List<Short> personalLunchBox,
+    List<Short> schoolLunchBox
+) {}

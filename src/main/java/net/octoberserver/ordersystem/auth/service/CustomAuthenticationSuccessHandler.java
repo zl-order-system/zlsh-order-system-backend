@@ -3,7 +3,7 @@ package net.octoberserver.ordersystem.auth.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import net.octoberserver.ordersystem.AppEnv;
+import net.octoberserver.ordersystem.AppEnvService;
 import net.octoberserver.ordersystem.user.AppUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JWTService jwtService;
+    private final AppEnvService appEnv;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -35,6 +36,6 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 //                .toUriString()
 //        );
         final var user = (AppUser) authentication.getPrincipal();
-        response.sendRedirect(AppEnv.FRONTEND_ROOT_URL + "/#/?token=" + URLEncoder.encode(jwtService.generateToken(user), StandardCharsets.UTF_8));
+        response.sendRedirect(appEnv.FRONTEND_ROOT_URL + "/#/?token=" + URLEncoder.encode(jwtService.generateToken(user), StandardCharsets.UTF_8));
     }
 }

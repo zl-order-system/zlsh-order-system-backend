@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,14 +51,14 @@ public class PaymentsService {
     }
 
     void updatePaymentStatus(UpdatePaymentStatusRequestDAO request) {
-        mealRepository.findById(request.getDate()).ifPresent(meal -> {
+        mealRepository.findById(request.date()).ifPresent(meal -> {
             if (meal.isLocked())
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
         });
 
-        final var orderData = orderRepository.findByDateAndUserID(request.getDate(), request.getUserID())
+        final var orderData = orderRepository.findByDateAndUserID(request.date(), request.userID())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "OrderData not found"));
-        orderData.setPaid(request.isPaid());
+        orderData.setPaid(request.paid());
         orderRepository.save(orderData);
     }
 }
