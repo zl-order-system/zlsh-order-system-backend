@@ -39,7 +39,7 @@ public class SystemMealController {
     ResponseEntity<Object> createMealData(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, @RequestBody @Valid List<MealDAO> request) {
         if (!authHeader.equals("Bearer " + appEnv.MEAL_AUTH_SECRET))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        mealRepository.saveAll(request.stream().map(dao -> new Meal(dao.getDate(), dao.getMealOptions(), false)).toList());
+        mealRepository.saveAll(request.stream().map(dao -> new Meal(dao.getDate(), dao.getMealOptions())).toList());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
