@@ -10,6 +10,8 @@ import net.octoberserver.ordersystem.meal.MealClassLock;
 import net.octoberserver.ordersystem.meal.MealClassLockRepository;
 import net.octoberserver.ordersystem.meal.MealRepository;
 import net.octoberserver.ordersystem.user.AppUserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,22 +46,26 @@ public class AdminController {
         private boolean locked;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
+
     @PatchMapping("/order/lock")
     void lockOrderingAndPayments(@RequestBody @Valid LockOrderingAndPaymentsDAO request) {
         final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        logger.warn(Long.toString(userID));
         final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
+        logger.warn(Short.toString(classNumber));
 
         final var id = MealClassLock.generateID(request.getDate(), classNumber);
-
+        logger.info(id);
+        final var lock = MealClassLock
+            .builder()
+            .id(id)
+            .mealID(request.getDate())
+            .classNumber(classNumber)
+            .build();
+        logger.info(lock.toString());
         if (request.isLocked()) {
-            classLockRepository.save(
-                MealClassLock
-                    .builder()
-                    .id(id)
-                    .mealID(request.getDate())
-                    .classNumber(classNumber)
-                    .build()
-            );
+            classLockRepository.save(lock);
             return;
         }
         classLockRepository.deleteById(id);
