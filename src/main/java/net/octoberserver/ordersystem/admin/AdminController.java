@@ -37,7 +37,6 @@ public class AdminController {
             .toList();
     }
 
-    @AllArgsConstructor
     record LockOrderingAndPaymentsDAO  (
         @NotNull
         @FutureOrPresent

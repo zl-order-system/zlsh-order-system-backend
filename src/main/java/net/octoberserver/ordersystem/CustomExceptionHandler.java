@@ -2,6 +2,8 @@ package net.octoberserver.ordersystem;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,8 +25,8 @@ public class CustomExceptionHandler {
             return new ResponseEntity<>(new ErrorResponse(status.value(), e.getReason()), status);
         }
 
-        if (ex instanceof MethodArgumentNotValidException e) {
-            return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
+        if (ex instanceof BindException e1 && ex instanceof org.springframework.web.ErrorResponse e2) {
+            return new ResponseEntity<>(new ErrorResponse(e2.getStatusCode().value(), e1.getMessage()), e2.getStatusCode());
         }
 
         final var status = HttpStatus.INTERNAL_SERVER_ERROR;
