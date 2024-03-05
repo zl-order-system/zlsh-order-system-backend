@@ -37,14 +37,14 @@ public class AdminController {
             .toList();
     }
 
-    @Data
     @AllArgsConstructor
-    static class LockOrderingAndPaymentsDAO {
+    record LockOrderingAndPaymentsDAO  (
         @NotNull
         @FutureOrPresent
-        private LocalDate date;
-        private boolean locked;
-    }
+        LocalDate date,
+        @NotNull
+        Boolean locked
+    ) {}
 
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
@@ -55,16 +55,16 @@ public class AdminController {
         final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
         logger.warn(Short.toString(classNumber));
 
-        final var id = MealClassLock.generateID(request.getDate(), classNumber);
+        final var id = MealClassLock.generateID(request.date(), classNumber);
         logger.info(id);
         final var lock = MealClassLock
             .builder()
             .id(id)
-            .mealID(request.getDate())
+            .mealID(request.date())
             .classNumber(classNumber)
             .build();
         logger.info(lock.toString());
-        if (request.isLocked()) {
+        if (request.locked()) {
             classLockRepository.save(lock);
             return;
         }

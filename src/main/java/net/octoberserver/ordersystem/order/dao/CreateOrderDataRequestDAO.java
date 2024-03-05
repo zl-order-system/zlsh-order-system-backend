@@ -11,5 +11,5 @@ public record CreateOrderDataRequestDAO(
     @NotBlank
     String lunchBoxType,
     @Min(0)
-    short selectedMeal
+    Short selectedMeal
 ) {}

@@ -8,9 +8,11 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 
 public record UpdatePaymentStatusRequestDAO(
-    long userID,
+    @NotNull
+    Long userID,
     @NotNull
     @FutureOrPresent
     LocalDate date,
-    boolean paid
+    @NotNull
+    Boolean paid
 ) {}
