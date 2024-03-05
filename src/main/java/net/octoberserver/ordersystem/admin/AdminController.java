@@ -50,6 +50,7 @@ public class AdminController {
         final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
 
         final var id = MealClassLock.generateID(request.getDate(), classNumber);
+
         if (request.isLocked()) {
             classLockRepository.save(
                 MealClassLock
