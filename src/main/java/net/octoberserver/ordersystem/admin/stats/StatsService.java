@@ -21,12 +21,12 @@ public class StatsService {
     private final MealRepository mealRepository;
     private final OrderRepository orderRepository;
 
-    List<GetStatDataResponseDAO> getStatData(LocalDate date) {
+    List<GetStatDataResponseDAO> getStatData(LocalDate date, short classNumber) {
         final var options = mealRepository
             .findById(date)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find statistics data for that date"))
             .getOptions();
-        return findStatData(date)
+        return findStatData(date, classNumber)
             .stream()
             .map(tuple ->
                 GetStatDataResponseDAO
@@ -40,12 +40,12 @@ public class StatsService {
             .toList();
     }
 
-    List<Tuple> findStatData(LocalDate date) {
-        return orderRepository.findStatData(date, LunchBox.PERSONAL, LunchBox.SCHOOL);
+    List<Tuple> findStatData(LocalDate date, short classNumber) {
+        return orderRepository.findStatData(date, classNumber, LunchBox.PERSONAL, LunchBox.SCHOOL);
     }
 
-    GetStatDetailedDataResponseDAO getStatDetailedData(LocalDate date, short mealOption) {
-        final var result = orderRepository.findStatDetailed(date, mealOption);
+    GetStatDetailedDataResponseDAO getStatDetailedData(LocalDate date, short classNumber, short mealOption) {
+        final var result = orderRepository.findStatDetailed(date, classNumber, mealOption);
         return GetStatDetailedDataResponseDAO.builder()
             .personalLunchBox(result
                 .stream()
