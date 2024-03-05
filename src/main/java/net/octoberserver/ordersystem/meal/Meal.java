@@ -24,5 +24,4 @@ public class Meal {
     @Valid
     @Convert(converter = MealOptionConverter.class)
     private List<MealOption> options;
-    boolean locked;
 }

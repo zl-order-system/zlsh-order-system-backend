@@ -6,11 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import net.octoberserver.ordersystem.meal.Meal;
+import net.octoberserver.ordersystem.meal.MealClassLock;
+import net.octoberserver.ordersystem.meal.MealClassLockRepository;
 import net.octoberserver.ordersystem.meal.MealRepository;
-import org.springframework.http.HttpStatus;
+import net.octoberserver.ordersystem.user.AppUserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +23,8 @@ import java.util.List;
 public class AdminController {
 
     private final MealRepository mealRepository;
+    private final MealClassLockRepository classLockRepository;
+    private final AppUserRepository userRepository;
 
     @GetMapping("/upcoming-dates")
     List<String> getUpcomingDates() {
@@ -38,16 +41,26 @@ public class AdminController {
         @NotNull
         @FutureOrPresent
         private LocalDate date;
-        private boolean state;
+        private boolean locked;
     }
 
     @PatchMapping("/order/lock")
     void lockOrderingAndPayments(@RequestBody @Valid LockOrderingAndPaymentsDAO request) {
-        final var options = mealRepository
-            .findById(request.getDate())
-            .orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Meal Data Not Found For That Date"))
-            .getOptions();
-        mealRepository.save(new Meal(request.getDate(), options, request.state));
+        final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
+
+        final var id = MealClassLock.generateID(request.getDate(), classNumber);
+        if (request.isLocked()) {
+            classLockRepository.save(
+                MealClassLock
+                    .builder()
+                    .id(id)
+                    .mealID(request.getDate())
+                    .classNumber(classNumber)
+                    .build()
+            );
+            return;
+        }
+        classLockRepository.deleteById(id);
     }
 }

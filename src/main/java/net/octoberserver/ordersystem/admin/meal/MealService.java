@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +25,6 @@ public class MealService {
             .findById(date)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find data for that date"))
             .getOptions();
-
         return new GetMealDetailedResponseDAO(mutable, options);
     }
 
@@ -40,7 +38,7 @@ public class MealService {
         }
 
         try {
-            mealRepository.save(new Meal(request.date(), request.options(), mealRepository.findById(request.date()).map(Meal::isLocked).or(() -> Optional.of(false)).get()));
+            mealRepository.save(new Meal(request.date(), request.options()));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid options");
         }

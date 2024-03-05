@@ -2,12 +2,12 @@ package net.octoberserver.ordersystem.order;
 
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
-import net.octoberserver.ordersystem.meal.Meal;
-import net.octoberserver.ordersystem.meal.MealOption;
-import net.octoberserver.ordersystem.meal.MealRepository;
+import net.octoberserver.ordersystem.meal.*;
 import net.octoberserver.ordersystem.order.dao.*;
 import net.octoberserver.ordersystem.order.lunchbox.LunchBoxService;
+import net.octoberserver.ordersystem.user.AppUserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,16 +24,20 @@ public class OrderService {
     private final LunchBoxService lunchBoxService;
     private final MealRepository mealRepository;
     private final OrderRepository orderRepository;
+    private final MealClassLockRepository classLockRepository;
+    private final AppUserRepository userRepository;
 
     public GetOrderDataResponseDAO getOrderData(long userID) {
-        return processOrderData(orderRepository.findUpcomingMealsWithOrders(userID));
+        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
+        return processOrderData(orderRepository.findUpcomingMealsWithOrders(userID), classNumber);
     }
 
-    public CreateOrderDataResponseDAO createOrderData(CreateOrderDataRequestDAO request, long userID) {
-        mealRepository.findById(request.date()).ifPresent(meal -> {
-            if (meal.isLocked())
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
+    public CreateOrderDataResponseDAO createOrderData(CreateOrderDataRequestDAO request, long userID, short classNumber) {
+        final var locked = classLockRepository.findById(MealClassLock.generateID(request.date(), classNumber)).isPresent();
+        if (locked)
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
 
+        mealRepository.findById(request.date()).ifPresent(meal -> {
             if (request.selectedMeal() > meal.getOptions().size() - 1)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid meal option: " + request.selectedMeal());
         });
@@ -55,7 +59,7 @@ public class OrderService {
         return new CreateOrderDataResponseDAO(id);
     }
 
-    public void updateOrderData(UpdateOrderDataRequestDAO request, long userID) {
+    public void updateOrderData(UpdateOrderDataRequestDAO request, long userID, short classNumber) {
         final var orderData = orderRepository
             .findByDateAndUserID(request.date(), userID)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "OrderData not found"));
@@ -64,7 +68,8 @@ public class OrderService {
             .findById(orderData.getDate())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meal not found"));
 
-        if (meal.isLocked())
+        final var locked = classLockRepository.findById(MealClassLock.generateID(request.date(), classNumber)).isPresent();
+        if (locked)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
 
         if (orderData.isPaid())
@@ -78,11 +83,11 @@ public class OrderService {
         orderRepository.save(orderData);
     }
 
-    public void deleteOrderData(DeleteOrderDataRequestDAO request, long userID) {
-        mealRepository.findById(request.date()).ifPresent(meal -> {
-            if (meal.isLocked())
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
-        });
+    public void deleteOrderData(DeleteOrderDataRequestDAO request, long userID, short classNumber) {
+        final var locked = classLockRepository.findById(MealClassLock.generateID(request.date(), classNumber)).isPresent();
+
+        if (locked)
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The date has been locked by an admin");
 
         final var orderData = orderRepository.findByDateAndUserID(request.date(), userID)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find order data"));
@@ -93,16 +98,17 @@ public class OrderService {
         orderRepository.delete(orderData);
     }
 
-    public GetOrderDataResponseDAO processOrderData(List<Tuple> mealOrders) {
+    public GetOrderDataResponseDAO processOrderData(List<Tuple> mealOrders, short classNumber) {
         final var headerData = new GetOrderDataResponseDAO.HeaderData(0, 0, 0);
         final var daoOrderItems = new ArrayList<GetOrderDataResponseDAO.DaoOrderItem>();
 
         mealOrders.forEach(mealOrder -> {
             final Meal meal = mealOrder.get(0, Meal.class);
             final OrderData orderData = mealOrder.get(1, OrderData.class);
+            final var locked = classLockRepository.findById(MealClassLock.generateID(meal.getDate(), classNumber)).isPresent();
 
             // Remove later
-            if (meal.isLocked()) return;
+            if (locked) return;
 
             final LocalDate date = meal.getDate();
             final String displayDate = date.format(DateTimeFormatter.ofPattern("M/d E", new Locale("zh", "TW")));
@@ -119,7 +125,7 @@ public class OrderService {
                     .price("-")
                     .lunchBox("-")
                     .selectedMeal("-")
-                    .locked(meal.isLocked())
+                    .locked(locked)
                     .build()
                 );
                 headerData.setDaysUnordered(headerData.getDaysUnordered() + 1);
@@ -147,7 +153,7 @@ public class OrderService {
                 .price(Integer.toString(price))
                 .lunchBox(lunchBoxService.getLunchBoxString(orderData.getLunchBox()))
                 .selectedMeal(meal.getOptions().get(orderData.getMealOption()).getName())
-                .locked(meal.isLocked())
+                .locked(locked)
                 .build()
             );
         });
