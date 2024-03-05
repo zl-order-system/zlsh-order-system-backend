@@ -9,32 +9,28 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-public class GetOrderDataResponseDAO {
-    @Data
+public record GetOrderDataResponseDAO(
+    net.octoberserver.ordersystem.order.dao.GetOrderDataResponseDAO.HeaderData headerData,
+    List<DaoOrderItem> bodyData
+) {
     @AllArgsConstructor
+    @Data
     public static class HeaderData {
         private int paid;
         private int owed;
         private int daysUnordered;
     }
 
-    @Data
     @Builder
-    @AllArgsConstructor
-    public static class DaoOrderItem {
-        private String state;
-        private LocalDate date;
-        private String displayDate;
-        private UUID id;
-        private String lunchBox;
-        private String price;
-        private String selectedMeal;
-        private List<MealOption> mealOptions;
-        private boolean locked;
-    }
-
-    private HeaderData headerData;
-    private List<DaoOrderItem> bodyData;
+    public record DaoOrderItem(
+        UUID id,
+        String state,
+        LocalDate date,
+        String displayDate,
+        String lunchBox,
+        String price,
+        String selectedMeal,
+        List<MealOption> mealOptions,
+        boolean locked
+    ) {}
 }

@@ -29,3 +29,5 @@ logging:
     org:
       springframework: debug
       hibernate: debug
+  file:
+    path: /var/logs/order-system
