@@ -6,7 +6,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.auth.service.JWTService;
+import net.octoberserver.ordersystem.user.AppUser;
+import net.octoberserver.ordersystem.user.AppUserRepository;
+import net.octoberserver.ordersystem.user.UserService;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,6 +30,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
     private final UserDetailsService userDetailsService;
+    private final AppUserRepository userRepository;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest req, @NonNull HttpServletResponse res, @NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -42,21 +48,22 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        final UserDetails userDetails = this.userDetailsService.loadUserByUsername(userID.get());
-        // Logically weird, might consider removing
-        if (userDetails == null) {
-            filterChain.doFilter(req, res);
-            return;
+        try {
+            Long.parseLong(userID.get());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user id");
         }
 
+        final AppUser user = userRepository.findById(Long.parseLong(userID.get()))
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         final UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-            userDetails,
-            null,
-            userDetails.getAuthorities()
+            user,
+            user,
+            user.getAuthorities()
         );
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-        final var securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(req, res);
     }

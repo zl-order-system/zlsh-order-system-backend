@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import static net.octoberserver.ordersystem.user.UserUtils.getUserFromCtx;
+
 @RestController
 @RequestMapping("/api/admin/payments")
 @RequiredArgsConstructor
@@ -23,15 +25,11 @@ public class PaymentsController {
 
     @GetMapping
     GetPaymentDataResponseDAO getPaymentData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date) {
-        final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
-        return paymentsService.getPaymentData(date, classNumber);
+        return paymentsService.getPaymentData(date, getUserFromCtx().getClassNumber());
     }
 
     @PatchMapping
     void updatePaymentStatus(@RequestBody @Valid UpdatePaymentStatusRequestDAO request) {
-        final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
-        paymentsService.updatePaymentStatus(request, classNumber);
+        paymentsService.updatePaymentStatus(request, getUserFromCtx().getClassNumber());
     }
 }

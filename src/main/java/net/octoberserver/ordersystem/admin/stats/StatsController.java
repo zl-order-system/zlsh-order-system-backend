@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import static net.octoberserver.ordersystem.user.UserUtils.getUserFromCtx;
+
 @RestController
 @RequestMapping("/api/admin/stats")
 @RequiredArgsConstructor
@@ -22,16 +24,12 @@ public class StatsController {
 
     @GetMapping
     List<GetStatDataResponseDAO> getStatData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date) {
-        final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
-        return statsService.getStatData(date, classNumber);
+        return statsService.getStatData(date, getUserFromCtx().getClassNumber());
     }
 
     @GetMapping("/detailed")
     // TODO: Change mealID to mealOption
     GetStatDetailedDataResponseDAO getStatDetailedData(@RequestParam(name = "date") @FutureOrPresent @NotNull LocalDate date, @RequestParam(name = "mealID") short mealOption) {
-        final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
-        return statsService.getStatDetailedData(date, classNumber, mealOption);
+        return statsService.getStatDetailedData(date, getUserFromCtx().getClassNumber(), mealOption);
     }
 }

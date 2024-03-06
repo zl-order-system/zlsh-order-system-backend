@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static net.octoberserver.ordersystem.user.UserUtils.getUserFromCtx;
+
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
@@ -49,13 +51,8 @@ public class AdminController {
 
     @PatchMapping("/order/lock")
     void lockOrderingAndPayments(@RequestBody @Valid LockOrderingAndPaymentsDAO request) {
-        final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        logger.warn(Long.toString(userID));
-        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
-        logger.warn(Short.toString(classNumber));
-
+        final var classNumber = getUserFromCtx().getClassNumber();
         final var id = MealClassLock.generateID(request.date(), classNumber);
-        logger.info(id);
         final var lock = MealClassLock
             .builder()
             .id(id)

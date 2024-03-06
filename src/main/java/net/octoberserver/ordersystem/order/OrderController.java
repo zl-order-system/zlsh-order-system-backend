@@ -7,6 +7,8 @@ import net.octoberserver.ordersystem.user.AppUserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import static net.octoberserver.ordersystem.user.UserUtils.getUserFromCtx;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/order")
@@ -17,30 +19,24 @@ public class OrderController {
 
     @GetMapping
     GetOrderDataResponseDAO getOrderData() {
-        return orderService.getOrderData(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return orderService.getOrderData(getUserFromCtx().getID());
     }
 
     @PostMapping
     CreateOrderDataResponseDAO createOrderData(@RequestBody @Valid CreateOrderDataRequestDAO request) {
-        final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
-
-        return orderService.createOrderData(request, Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()), classNumber);
+        final var user = getUserFromCtx();
+        return orderService.createOrderData(request, user.getID(), user.getClassNumber());
     }
 
     @PatchMapping
     void updateOrderData(@RequestBody @Valid UpdateOrderDataRequestDAO request) {
-        final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
-
-        orderService.updateOrderData(request, Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()), classNumber);
+        final var user = getUserFromCtx();
+        orderService.updateOrderData(request, user.getID(), user.getClassNumber());
     }
 
     @DeleteMapping
     void deleteOrderData(@RequestBody @Valid DeleteOrderDataRequestDAO request) {
-        final var userID = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
-
-        orderService.deleteOrderData(request, Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()), classNumber);
+        final var user = getUserFromCtx();
+        orderService.deleteOrderData(request, user.getID(), user.getClassNumber());
     }
 }

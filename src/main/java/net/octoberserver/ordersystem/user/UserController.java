@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static net.octoberserver.ordersystem.user.UserUtils.getUserFromCtx;
+
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -19,16 +21,16 @@ public class UserController {
 
     @GetMapping("/home")
     GetHomeDataResponseDAO getHomeData() {
-        return userService.getHomeData(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return userService.getHomeData(getUserFromCtx().getID());
     }
 
     @GetMapping("/account")
     GetAccountDataResponseDAO getAccountData() {
-        return userService.getAccountData(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return userService.getAccountData(getUserFromCtx().getID());
     }
 
     @GetMapping("/roles")
     List<String> getRoles() {
-        return userService.getRoles(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return userService.getRoles(getUserFromCtx().getID());
     }
 }
