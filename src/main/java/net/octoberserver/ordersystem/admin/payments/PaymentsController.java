@@ -7,13 +7,11 @@ import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataResponseDAO;
 import net.octoberserver.ordersystem.admin.payments.dao.UpdatePaymentStatusRequestDAO;
 import net.octoberserver.ordersystem.user.AppUserRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
-import static net.octoberserver.ordersystem.user.UserUtils.getUserFromCtx;
+import static net.octoberserver.ordersystem.Utils.getUserFromCtx;
 
 @RestController
 @RequestMapping("/api/admin/payments")

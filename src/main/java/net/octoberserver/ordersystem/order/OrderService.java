@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.meal.*;
 import net.octoberserver.ordersystem.order.dao.*;
 import net.octoberserver.ordersystem.order.lunchbox.LunchBoxService;
-import net.octoberserver.ordersystem.user.AppUserRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,6 +16,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import static net.octoberserver.ordersystem.Utils.formatApiDate;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -25,10 +25,8 @@ public class OrderService {
     private final MealRepository mealRepository;
     private final OrderRepository orderRepository;
     private final MealClassLockRepository classLockRepository;
-    private final AppUserRepository userRepository;
 
-    public GetOrderDataResponseDAO getOrderData(long userID) {
-        final var classNumber = userRepository.findById(userID).orElseThrow().getClassNumber();
+    public GetOrderDataResponseDAO getOrderData(long userID, short classNumber) {
         return processOrderData(orderRepository.findUpcomingMealsWithOrders(userID), classNumber);
     }
 
@@ -111,20 +109,18 @@ public class OrderService {
             if (locked) return;
 
             final LocalDate date = meal.getDate();
-            final String displayDate = date.format(DateTimeFormatter.ofPattern("M/d E", new Locale("zh", "TW")));
             final List<MealOption> mealOptions = meal.getOptions();
 
             if (orderData == null) {
                 daoOrderItems.add(GetOrderDataResponseDAO.DaoOrderItem
                     .builder()
-                    .date(date)
-                    .displayDate(displayDate)
+                    .date(formatApiDate(date))
                     .id(null)
                     .mealOptions(mealOptions)
                     .state(OrderState.UNORDERED)
-                    .price("-")
-                    .lunchBox("-")
-                    .selectedMeal("-")
+                    .price(null)
+                    .lunchBox(null)
+                    .selectedMeal(null)
                     .locked(locked)
                     .build()
                 );
@@ -145,14 +141,13 @@ public class OrderService {
 
             daoOrderItems.add(GetOrderDataResponseDAO.DaoOrderItem
                 .builder()
-                .date(date)
-                .displayDate(displayDate)
+                .date(formatApiDate(date))
                 .id(orderData.getID())
                 .mealOptions(mealOptions)
                 .state(orderState)
-                .price(Integer.toString(price))
+                .price(price)
                 .lunchBox(lunchBoxService.getLunchBoxString(orderData.getLunchBox()))
-                .selectedMeal(meal.getOptions().get(orderData.getMealOption()).getName())
+                .selectedMeal(orderData.getMealOption())
                 .locked(locked)
                 .build()
             );

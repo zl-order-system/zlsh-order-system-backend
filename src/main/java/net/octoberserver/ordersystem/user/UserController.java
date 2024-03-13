@@ -3,14 +3,13 @@ package net.octoberserver.ordersystem.user;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.user.dao.GetAccountDataResponseDAO;
 import net.octoberserver.ordersystem.user.dao.GetHomeDataResponseDAO;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static net.octoberserver.ordersystem.user.UserUtils.getUserFromCtx;
+import static net.octoberserver.ordersystem.Utils.getUserFromCtx;
 
 @RestController
 @RequestMapping("/api/user")

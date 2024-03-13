@@ -26,7 +26,7 @@ public class CustomExceptionHandler {
         }
 
         if (ex instanceof BindException e1 && ex instanceof org.springframework.web.ErrorResponse e2) {
-            return new ResponseEntity<>(new ErrorResponse(e2.getStatusCode().value(), e1.getMessage()), e2.getStatusCode());
+            return new ResponseEntity<>(new ErrorResponse(e2.getStatusCode().value(), e1.getMessage() + " Exception Classpath: " + ex.getClass().getName()), e2.getStatusCode());
         }
 
         final var status = HttpStatus.INTERNAL_SERVER_ERROR;

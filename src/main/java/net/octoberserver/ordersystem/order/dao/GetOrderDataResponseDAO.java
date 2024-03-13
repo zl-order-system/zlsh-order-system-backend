@@ -5,12 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import net.octoberserver.ordersystem.meal.MealOption;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 public record GetOrderDataResponseDAO(
-    net.octoberserver.ordersystem.order.dao.GetOrderDataResponseDAO.HeaderData headerData,
+    HeaderData headerData,
     List<DaoOrderItem> bodyData
 ) {
     @AllArgsConstructor
@@ -25,11 +24,10 @@ public record GetOrderDataResponseDAO(
     public record DaoOrderItem(
         UUID id,
         String state,
-        LocalDate date,
-        String displayDate,
+        String date,
         String lunchBox,
-        String price,
-        String selectedMeal,
+        Integer price,
+        Short selectedMeal,
         List<MealOption> mealOptions,
         boolean locked
     ) {}

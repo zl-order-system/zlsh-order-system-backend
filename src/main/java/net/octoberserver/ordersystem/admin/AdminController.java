@@ -3,8 +3,6 @@ package net.octoberserver.ordersystem.admin;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.meal.MealClassLock;
 import net.octoberserver.ordersystem.meal.MealClassLockRepository;
@@ -12,14 +10,13 @@ import net.octoberserver.ordersystem.meal.MealRepository;
 import net.octoberserver.ordersystem.user.AppUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static net.octoberserver.ordersystem.user.UserUtils.getUserFromCtx;
+import static net.octoberserver.ordersystem.Utils.getUserFromCtx;
 
 @RestController
 @RequestMapping("/api/admin")

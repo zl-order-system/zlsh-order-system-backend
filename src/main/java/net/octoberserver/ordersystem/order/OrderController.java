@@ -3,11 +3,9 @@ package net.octoberserver.ordersystem.order;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.order.dao.*;
-import net.octoberserver.ordersystem.user.AppUserRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import static net.octoberserver.ordersystem.user.UserUtils.getUserFromCtx;
+import static net.octoberserver.ordersystem.Utils.getUserFromCtx;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,11 +13,11 @@ import static net.octoberserver.ordersystem.user.UserUtils.getUserFromCtx;
 public class OrderController {
 
     private final OrderService orderService;
-    private final AppUserRepository userRepository;
 
     @GetMapping
     GetOrderDataResponseDAO getOrderData() {
-        return orderService.getOrderData(getUserFromCtx().getID());
+        final var user = getUserFromCtx();
+        return orderService.getOrderData(user.getID(), user.getClassNumber());
     }
 
     @PostMapping
