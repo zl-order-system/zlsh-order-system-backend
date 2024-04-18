@@ -3,7 +3,6 @@ package net.octoberserver.ordersystem.user.dao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -12,7 +11,7 @@ public class GetHomeDataResponseDAO {
     @Data
     @AllArgsConstructor
     public static class BannerData {
-        private LocalDate today;
+        private String today;
         private boolean hasPaidToday;
         private int owed;
         private int daysOrdered;
@@ -21,7 +20,7 @@ public class GetHomeDataResponseDAO {
     @Data
     @AllArgsConstructor
     public static class PreviewData {
-        private LocalDate date;
+        private String date;
         private boolean ordered;
     }
 

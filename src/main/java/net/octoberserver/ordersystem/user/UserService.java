@@ -14,6 +14,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static net.octoberserver.ordersystem.Utils.formatApiDate;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -32,7 +34,7 @@ public class UserService {
             .avatarUrl("")
             .name(user.getName())
             .id(userID)
-            .googleName(user.googleName)
+            .googleName(user.getGoogleName())
             .email(user.getEmail())
             .classNumber(user.getClassNumber())
             .seatNumber(user.getSeatNumber())
@@ -44,7 +46,7 @@ public class UserService {
     }
 
     public GetHomeDataResponseDAO processHomeData(List<Tuple> mealOrders, LocalDate today) {
-        final var headerData = new GetHomeDataResponseDAO.BannerData(today, false, 0, 0);
+        final var headerData = new GetHomeDataResponseDAO.BannerData(formatApiDate(today), false, 0, 0);
         mealOrders.forEach(mealOrder -> {
             final OrderData orderData = mealOrder.get(1, OrderData.class);
             if (orderData == null) {
@@ -65,9 +67,9 @@ public class UserService {
                 var meal = mealOrder.get(0, Meal.class);
                 var orderData = mealOrder.get(1, OrderData.class);
                 if (orderData == null) {
-                    return new GetHomeDataResponseDAO.PreviewData(meal.getDate(), false);
+                    return new GetHomeDataResponseDAO.PreviewData(formatApiDate(meal.getDate()), false);
                 }
-                return new GetHomeDataResponseDAO.PreviewData(orderData.getDate(), true);
+                return new GetHomeDataResponseDAO.PreviewData(formatApiDate(orderData.getDate()), true);
             })
             .collect(Collectors.toList());
         return new GetHomeDataResponseDAO(headerData, bodyData);

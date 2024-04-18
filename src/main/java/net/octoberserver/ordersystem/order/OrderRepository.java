@@ -27,8 +27,9 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
         INNER JOIN OrderData o
         ON u.ID = o.userID
         WHERE o.date = :date
+        AND u.classNumber = :classNum
     """)
-    List<Tuple> findOrdersWithUsersByDate(@Param("date") LocalDate date);
+    List<Tuple> findOrdersWithUsersByDate(@Param("date") LocalDate date, @Param("classNum") short classNumber);
 
     @Query("""
         SELECT
@@ -36,11 +37,14 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
             SUM(CASE WHEN o.lunchBox = :personal THEN 1 ELSE 0 END) AS personalBoxCount,
             SUM(CASE WHEN o.lunchBox = :school THEN 1 ELSE 0 END) AS scholBoxCount
         FROM OrderData o
+        INNER JOIN AppUser u
+        ON o.userID = u.ID
         WHERE o.date = :date
+        AND u.classNumber = :classNum
         AND o.paid = true
         GROUP BY o.mealOption
     """)
-    List<Tuple> findStatData(@Param("date") LocalDate date, @Param("personal") LunchBox personal, @Param("school") LunchBox school);
+    List<Tuple> findStatData(@Param("date") LocalDate date, @Param("classNum") short classNumber, @Param("personal") LunchBox personal, @Param("school") LunchBox school);
 
     @Query("""
         SELECT u.seatNumber, o.lunchBox
@@ -48,10 +52,11 @@ public interface OrderRepository extends JpaRepository<OrderData, UUID> {
         INNER JOIN AppUser u
         ON u.ID = o.userID
         WHERE o.date = :date
+        AND u.classNumber = :classNum
         AND o.paid = true
         AND o.mealOption = :mealOption
     """)
-    List<Tuple> findStatDetailed(@Param("date") LocalDate date, @Param("mealOption") short mealOption);
+    List<Tuple> findStatDetailed(@Param("date") LocalDate date, @Param("classNum") short classNumber, @Param("mealOption") short mealOption);
 
     Optional<OrderData> findByDateAndUserID(LocalDate date, long userID);
 

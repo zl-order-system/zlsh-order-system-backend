@@ -43,7 +43,6 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/admin/stats/**").hasRole(Role.STATS_ADMIN.name())
                 .requestMatchers("/api/admin/payments/**").hasRole(Role.PAYMENTS_ADMIN.name())
                 .requestMatchers("/api/admin/meal/**").hasRole(Role.MEAL_ADMIN.name())
-                .requestMatchers("/api/admin/messages/**").hasRole(Role.MESSAGES_ADMIN.name())
                 .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()

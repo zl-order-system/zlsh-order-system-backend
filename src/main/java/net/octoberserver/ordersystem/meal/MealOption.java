@@ -1,6 +1,7 @@
 package net.octoberserver.ordersystem.meal;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class MealOption {
     @NotBlank
     private String name;
-    private boolean schoolOnly;
+    @NotNull
+    private Boolean schoolOnly;
 }
