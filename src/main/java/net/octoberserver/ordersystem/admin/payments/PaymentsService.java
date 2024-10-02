@@ -5,6 +5,7 @@ import net.octoberserver.ordersystem.admin.payments.dao.GetPaymentDataResponseDA
 import net.octoberserver.ordersystem.admin.payments.dao.UpdatePaymentStatusRequestDAO;
 import net.octoberserver.ordersystem.meal.MealClassLock;
 import net.octoberserver.ordersystem.meal.MealClassLockRepository;
+import net.octoberserver.ordersystem.order.OrderService;
 import net.octoberserver.ordersystem.order.lunchbox.LunchBoxService;
 import net.octoberserver.ordersystem.meal.MealOption;
 import net.octoberserver.ordersystem.meal.MealRepository;
@@ -12,6 +13,7 @@ import net.octoberserver.ordersystem.order.OrderData;
 import net.octoberserver.ordersystem.order.OrderRepository;
 import net.octoberserver.ordersystem.user.AppUser;
 import net.octoberserver.ordersystem.user.AppUserRepository;
+import net.octoberserver.ordersystem.websocket.WebSocketService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,6 +29,8 @@ public class PaymentsService {
     private final OrderRepository orderRepository;
     private final AppUserRepository userRepository;
     private final MealClassLockRepository classLockRepository;
+    private final WebSocketService webSocketService;
+    private final OrderService orderService;
 
     GetPaymentDataResponseDAO getPaymentData(LocalDate date, short classNumber) {
         final var meal = mealRepository
@@ -70,5 +74,7 @@ public class PaymentsService {
 
         orderData.setPaid(request.paid());
         orderRepository.save(orderData);
+
+        webSocketService.sendOrderDataToClient(orderData.getUserID(), classNumber, orderService);
     }
 }
