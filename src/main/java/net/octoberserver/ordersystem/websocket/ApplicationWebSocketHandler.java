@@ -19,22 +19,26 @@ public class ApplicationWebSocketHandler implements WebSocketHandler {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws IOException {
         if (!(message.getPayload() instanceof String msg)) { return; }
 
-        if (msg.startsWith("AUTH\n")) {
-            final var authResult = webSocketRequestService.doAuth(msg, session);
-            session.sendMessage(webSocketService.createWSMessage(authResult.error() ? WSMessageType.ERROR : WSMessageType.SUCCESS, authResult));
-            return;
-        }
+        try {
+            if (msg.startsWith("AUTH\n")) {
+                final var authResult = webSocketRequestService.doAuth(msg, session);
+                session.sendMessage(webSocketService.createWSMessage(authResult.error() ? WSMessageType.ERROR : WSMessageType.SUCCESS, authResult));
+                return;
+            }
 
-        final var checkAuthResult = webSocketRequestService.checkAuth(session.getId());
-        if (checkAuthResult.v1().error()) {
-            session.sendMessage(webSocketService.createWSMessage(WSMessageType.ERROR, checkAuthResult.v1()));
-            return;
-        }
+            final var checkAuthResult = webSocketRequestService.checkAuth(session.getId());
+            if (checkAuthResult.v1().error()) {
+                session.sendMessage(webSocketService.createWSMessage(WSMessageType.ERROR, checkAuthResult.v1()));
+                return;
+            }
 
-        final var result = webSocketRequestService.parseAndHandleRequest(msg, checkAuthResult.v2(), session);
-        if (result.error()) {
-            session.sendMessage(webSocketService.createWSMessage(WSMessageType.ERROR, result));
-            return;
+            final var result = webSocketRequestService.parseAndHandleRequest(msg, checkAuthResult.v2(), session);
+            if (result.error()) {
+                session.sendMessage(webSocketService.createWSMessage(WSMessageType.ERROR, result));
+                return;
+            }
+        } catch (Exception e) {
+            session.sendMessage(webSocketService.createWSMessage(WSMessageType.ERROR, "Error: " + e));
         }
     }
 
