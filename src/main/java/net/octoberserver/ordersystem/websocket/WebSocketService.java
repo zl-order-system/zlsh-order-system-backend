@@ -36,7 +36,7 @@ public class WebSocketService {
     }
 
     public Err sendOrderDataToClient(Long userID, short classNumber, OrderService orderService) {
-        if (userIdToSession.containsKey(userID)) {
+        if (!userIdToSession.containsKey(userID)) {
             return Err.ok("User not subscribed");
         }
         return sendOrderDataToClient(userID, classNumber, userIdToSession.get(userID), orderService);
