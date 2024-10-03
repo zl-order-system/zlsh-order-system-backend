@@ -11,9 +11,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +57,7 @@ public class WebSocketService {
     public void addWhitelistedSession(WebSocketSession session, AppUser user) {
         sessionIdToUser.put(session.getId(), user);
         if (!userIdToSession.containsKey(user.getID())) {
-            userIdToSession.put(user.getID(), List.of(session));
+            userIdToSession.put(user.getID(), Arrays.asList(session));
             return;
         }
         userIdToSession.get(user.getID()).add(session);
