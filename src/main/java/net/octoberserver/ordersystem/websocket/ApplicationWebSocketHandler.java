@@ -38,6 +38,7 @@ public class ApplicationWebSocketHandler implements WebSocketHandler {
                 return;
             }
         } catch (Exception e) {
+            System.out.println("WS Error: " + e);
             session.sendMessage(webSocketService.createWSMessage(WSMessageType.ERROR, "Error: " + e));
         }
     }
