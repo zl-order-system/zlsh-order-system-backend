@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import static net.octoberserver.ordersystem.Utils.formatApiDate;
@@ -58,7 +56,7 @@ public class OrderService {
         );
 
 
-        webSocketService.sendOrderDataToClient(userID, classNumber, this);
+        webSocketService.sendOrderDataToClients(userID, classNumber, this);
         return new CreateOrderDataResponseDAO(id);
     }
 
@@ -85,7 +83,7 @@ public class OrderService {
         orderData.setLunchBox(lunchBoxService.getLunchBoxEnum(request.lunchBoxType()));
         orderRepository.save(orderData);
 
-        webSocketService.sendOrderDataToClient(userID, classNumber, this);
+        webSocketService.sendOrderDataToClients(userID, classNumber, this);
     }
 
     public void deleteOrderData(DeleteOrderDataRequestDAO request, long userID, short classNumber) {
@@ -102,7 +100,7 @@ public class OrderService {
 
         orderRepository.delete(orderData);
 
-        webSocketService.sendOrderDataToClient(userID, classNumber, this);
+        webSocketService.sendOrderDataToClients(userID, classNumber, this);
     }
 
     public GetOrderDataResponseDAO processOrderData(List<Tuple> mealOrders, short classNumber) {

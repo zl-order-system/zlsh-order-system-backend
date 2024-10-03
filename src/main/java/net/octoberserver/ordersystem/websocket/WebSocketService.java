@@ -12,13 +12,14 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class WebSocketService {
 
-    private final Map<Long, WebSocketSession> userIdToSession = new HashMap<>();
+    private final Map<Long, List<WebSocketSession>> userIdToSession = new HashMap<>();
     private final Map<String, AppUser> sessionIdToUser = new HashMap<>();
 
     private final ObjectMapper objectMapper;
@@ -35,11 +36,14 @@ public class WebSocketService {
         return sendOrderDataToClient(user.getID(), user.getClassNumber(), session, orderService);
     }
 
-    public Err sendOrderDataToClient(Long userID, short classNumber, OrderService orderService) {
+    public Err sendOrderDataToClients(Long userID, short classNumber, OrderService orderService) {
         if (!userIdToSession.containsKey(userID)) {
             return Err.ok("User not subscribed");
         }
-        return sendOrderDataToClient(userID, classNumber, userIdToSession.get(userID), orderService);
+        final var clients = userIdToSession.get(userID);
+        return clients.stream()
+            .map(client -> sendOrderDataToClient(userID, classNumber, client, orderService))
+            .reduce(Err.ok("Successfully sent order data to clients"), (prev, current)-> current.error() ? current : prev);
     }
 
     public Err sendOrderDataToClient(Long userID, short classNumber, WebSocketSession session, OrderService orderService) {
@@ -54,12 +58,26 @@ public class WebSocketService {
 
     public void addWhitelistedSession(WebSocketSession session, AppUser user) {
         sessionIdToUser.put(session.getId(), user);
-        userIdToSession.put(user.getID(), session);
+        if (!userIdToSession.containsKey(user.getID())) {
+            userIdToSession.put(user.getID(), List.of(session));
+            return;
+        }
+        userIdToSession.get(user.getID()).add(session);
     }
 
     public void removeWhitelistedSession(String sessionID, long userID) {
         sessionIdToUser.remove(sessionID);
-        userIdToSession.remove(userID);
+        userIdToSession
+            .computeIfPresent(userID,
+                (k, sessions) -> sessions
+                    .stream()
+                    .filter(session -> !session.getId().equals(sessionID))
+                    .toList()
+            );
+        if (userIdToSession.containsKey(userID) && userIdToSession.get(userID).isEmpty()) {
+            userIdToSession.remove(userID);
+            return;
+        }
     }
 
     public boolean isSessionWhitelisted(String sessionID) {

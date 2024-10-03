@@ -75,6 +75,6 @@ public class PaymentsService {
         orderData.setPaid(request.paid());
         orderRepository.save(orderData);
 
-        webSocketService.sendOrderDataToClient(orderData.getUserID(), classNumber, orderService);
+        webSocketService.sendOrderDataToClients(orderData.getUserID(), classNumber, orderService);
     }
 }
