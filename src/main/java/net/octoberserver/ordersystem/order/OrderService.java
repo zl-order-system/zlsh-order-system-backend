@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.octoberserver.ordersystem.meal.*;
 import net.octoberserver.ordersystem.order.dao.*;
 import net.octoberserver.ordersystem.order.lunchbox.LunchBoxService;
+import net.octoberserver.ordersystem.websocket.WebSocketService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,6 +26,7 @@ public class OrderService {
     private final MealRepository mealRepository;
     private final OrderRepository orderRepository;
     private final MealClassLockRepository classLockRepository;
+    private final WebSocketService webSocketService;
 
     public GetOrderDataResponseDAO getOrderData(long userID, short classNumber) {
         return processOrderData(orderRepository.findUpcomingMealsWithOrders(userID), classNumber);
@@ -54,6 +56,9 @@ public class OrderService {
             .paid(false)
             .build()
         );
+
+
+        webSocketService.sendOrderDataToClient(userID, classNumber, this);
         return new CreateOrderDataResponseDAO(id);
     }
 
@@ -79,6 +84,8 @@ public class OrderService {
         orderData.setMealOption(request.selectedMeal());
         orderData.setLunchBox(lunchBoxService.getLunchBoxEnum(request.lunchBoxType()));
         orderRepository.save(orderData);
+
+        webSocketService.sendOrderDataToClient(userID, classNumber, this);
     }
 
     public void deleteOrderData(DeleteOrderDataRequestDAO request, long userID, short classNumber) {
@@ -94,6 +101,8 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete OrderData that has been paid already");
 
         orderRepository.delete(orderData);
+
+        webSocketService.sendOrderDataToClient(userID, classNumber, this);
     }
 
     public GetOrderDataResponseDAO processOrderData(List<Tuple> mealOrders, short classNumber) {
