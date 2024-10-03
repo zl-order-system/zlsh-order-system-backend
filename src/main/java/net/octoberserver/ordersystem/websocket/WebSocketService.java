@@ -57,7 +57,7 @@ public class WebSocketService {
     public void addWhitelistedSession(WebSocketSession session, AppUser user) {
         sessionIdToUser.put(session.getId(), user);
         if (!userIdToSession.containsKey(user.getID())) {
-            userIdToSession.put(user.getID(), Arrays.asList(session));
+            userIdToSession.put(user.getID(), new ArrayList<>(List.of(session)));
             return;
         }
         userIdToSession.get(user.getID()).add(session);
